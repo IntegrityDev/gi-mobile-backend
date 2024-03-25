@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model profiles {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(80)
+  description String   @db.VarChar(150)
+  createdAt   DateTime @default(now()) @db.Date
+  createdBy   Int
+}
+
+model users {
+  id         Int       @id @default(autoincrement())
+  username   String    @db.VarChar(150)
+  password   String    @db.VarChar(150)
+  createdAt  DateTime  @default(now()) @db.Date
+  modifiedAt DateTime? @db.Date
+  modifiedBy Int?
+}
+
+model supervisors {
+  id             Int       @default(autoincrement())
+  identification String    @db.VarChar(80)
+  email          String    @db.VarChar(250)
+  address        String    @db.VarChar(150)
+  phone          String    @db.VarChar(80)
+  cellphone      String    @db.VarChar(80)
+  fullname       String    @db.VarChar(150)
+  isActive       Boolean
+  createdAt      DateTime  @default(now()) @db.Date
+  createdBy      Int
+  modifiedAt     DateTime? @db.Date
+  modifiedBy     Int?
+
+  @@id([id, identification])
+  @@unique([id, identification], map: "id")
+}
+
+model clients {
+  id             Int       @id @default(autoincrement())
+  identification String    @unique(map: "client_identification") @db.VarChar(80)
+  name           String    @db.VarChar(200)
+  email          String    @db.VarChar(150)
+  address        String    @db.VarChar(150)
+  phone          String    @db.VarChar(80)
+  cellphone      String    @db.VarChar(80)
+  isActive       Boolean
+  createdAt      DateTime  @default(now()) @db.Date
+  createdBy      Int
+  modifiedAt     DateTime? @db.Date
+  modifiedBy     Int?
+}
+
+model employees {
+  id             Int      @id @default(autoincrement())
+  identification String   @unique(map: "employee_identification") @db.VarChar(80)
+  fullname       String   @db.VarChar(150)
+  email          String   @db.VarChar(150)
+  address        String   @db.VarChar(150)
+  phone          String   @db.VarChar(150)
+  cellphone      String   @db.VarChar(80)
+  isActive       Boolean
+  createdAt      DateTime @default(now()) @db.Date
+  createdBy      Int
+  modifiedAt     Int?
+  modifiedBy     Int?
+}
+
+model company {
+  id             Int      @id @default(autoincrement())
+  identification String   @unique(map: "company_identification") @db.VarChar(80)
+  name           String   @db.VarChar(150)
+  address        String   @db.VarChar(150)
+  phone          String?  @db.VarChar(80)
+  cellphone      String?  @db.VarChar(80)
+  imageUrl       String?  @db.VarChar(500)
+  createdBy      Int
+  createdAt      DateTime @default(now()) @db.Date
+  isActive       Boolean
+}
