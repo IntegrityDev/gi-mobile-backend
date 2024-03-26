@@ -10,36 +10,22 @@ datasource db {
 model profiles {
   id          Int      @id @default(autoincrement())
   name        String   @db.VarChar(80)
-  description String   @db.VarChar(150)
+  description String?  @db.VarChar(150)
   createdAt   DateTime @default(now()) @db.Date
   createdBy   Int
 }
 
 model users {
-  id         Int       @id @default(autoincrement())
-  username   String    @db.VarChar(150)
-  password   String    @db.VarChar(150)
-  createdAt  DateTime  @default(now()) @db.Date
-  modifiedAt DateTime? @db.Date
-  modifiedBy Int?
-}
-
-model supervisors {
-  id             Int       @default(autoincrement())
-  identification String    @db.VarChar(80)
-  email          String    @db.VarChar(250)
-  address        String    @db.VarChar(150)
-  phone          String    @db.VarChar(80)
-  cellphone      String    @db.VarChar(80)
-  fullname       String    @db.VarChar(150)
-  isActive       Boolean
-  createdAt      DateTime  @default(now()) @db.Date
-  createdBy      Int
-  modifiedAt     DateTime? @db.Date
-  modifiedBy     Int?
-
-  @@id([id, identification])
-  @@unique([id, identification], map: "id")
+  id               Int       @id @default(autoincrement())
+  identificationId String    @db.VarChar(80)
+  password         String    @db.VarChar(150)
+  isVerified       Boolean
+  salt             String    @db.VarChar(150)
+  createdAt        DateTime  @default(now()) @db.Date
+  createdBy        Int?
+  modifiedAt       DateTime? @db.Date
+  modifiedBy       Int?
+  isDeleted        Boolean?
 }
 
 model clients {
@@ -50,6 +36,7 @@ model clients {
   address        String    @db.VarChar(150)
   phone          String    @db.VarChar(80)
   cellphone      String    @db.VarChar(80)
+  imageUrl       String?   @db.VarChar(500)
   isActive       Boolean
   createdAt      DateTime  @default(now()) @db.Date
   createdBy      Int
@@ -66,6 +53,7 @@ model employees {
   phone          String   @db.VarChar(150)
   cellphone      String   @db.VarChar(80)
   isActive       Boolean
+  imageUrl       String?  @db.VarChar(500)
   createdAt      DateTime @default(now()) @db.Date
   createdBy      Int
   modifiedAt     Int?
@@ -83,4 +71,123 @@ model company {
   createdBy      Int
   createdAt      DateTime @default(now()) @db.Date
   isActive       Boolean
+}
+
+model clientRequestResponses {
+  id         Int       @id @default(autoincrement())
+  requestId  Int
+  comments   String    @db.Text
+  createdAt  DateTime  @default(now()) @db.Date
+  createdBy  Int
+  modifiedBy Int?
+  modifiedAt DateTime? @db.Date
+  isDeleted  Boolean
+}
+
+model clientsRequests {
+  id         Int       @id @default(autoincrement())
+  clientId   Int
+  isRead     Boolean
+  request    String    @db.Text
+  createdAt  DateTime  @default(now()) @db.Date
+  createdBy  Int
+  modifiedAt DateTime? @db.Date
+  modifiedBy Int?
+  isDeleted  Boolean
+}
+
+model documentTypes {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(150)
+  isActive Boolean
+}
+
+model employeeRequestComments {
+  id         Int       @id @default(autoincrement())
+  idRequest  Int
+  comments   String    @db.Text
+  createdAt  DateTime  @default(now()) @db.Date
+  createdBy  Int
+  modifiedBy Int?
+  modifiedAt DateTime? @db.Date
+}
+
+model employeeRequests {
+  id           Int       @id @default(autoincrement())
+  employeeId   Int
+  documentType Int
+  createdAt    DateTime  @default(now()) @db.Date
+  isRead       Boolean
+  observations String?   @db.VarChar(500)
+  modifiedAt   DateTime? @db.Date
+  modifiedBy   Int?
+}
+
+model reportCommentPhotos {
+  id              Int      @id @default(autoincrement())
+  reportCommentId Int
+  imageUrl        String   @db.VarChar(500)
+  createdAt       DateTime @default(now()) @db.Date
+  createdBy       Int
+  modifiedBy      Int?
+  modifiedAt      Int?
+  isDeleted       Boolean
+}
+
+model reportComments {
+  id         Int       @id @default(autoincrement())
+  reportId   Int
+  comments   String    @db.Text
+  createdBy  Int
+  createdAt  DateTime  @default(now()) @db.Date
+  modifiedBy Int?
+  modifiedAt DateTime? @db.Date
+  isDeleted  Boolean
+}
+
+model reportPhotos {
+  id         Int       @id @default(autoincrement())
+  reportId   Int
+  imageUrl   String    @db.VarChar(500)
+  isDeleted  Boolean
+  createdAt  DateTime  @default(now()) @db.Date
+  createdBy  Int
+  modifiedAt DateTime? @db.Date
+  modifiedBy Int
+}
+
+model reports {
+  id         Int       @id @default(autoincrement())
+  visitId    Int       @unique(map: "visit_id")
+  report     String    @db.Text
+  isDeleted  Boolean
+  createdAt  DateTime  @db.Date
+  modifiedAt DateTime? @db.Date
+  modifiedBy Int?
+}
+
+model visits {
+  id         Int       @id @default(autoincrement())
+  dateVisit  DateTime  @db.Date
+  timeVisite DateTime  @db.Time(0)
+  employeeId Int
+  clientId   Int
+  details    String?   @db.Text
+  createdAt  DateTime  @default(now()) @db.Date
+  modifiedAt DateTime? @db.Date
+  modifiedBy Int?
+  isDeleted  Boolean
+}
+
+model userProfiles {
+  id               Int       @default(autoincrement())
+  identificationId Int
+  profileId        Int
+  isDeleted        Boolean
+  createdAt        DateTime  @default(now()) @db.Date
+  createdBy        Int
+  modifiedAt       DateTime? @db.Date
+  modifiedBy       Int?
+
+  @@id([id, identificationId])
 }
