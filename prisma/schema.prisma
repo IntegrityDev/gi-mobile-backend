@@ -8,11 +8,14 @@ datasource db {
 }
 
 model profiles {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(80)
-  description String?  @db.VarChar(150)
-  createdAt   DateTime @default(now()) @db.Date
-  createdBy   Int
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(80)
+  description  String?  @db.VarChar(150)
+  isSupervisor Boolean
+  isAdmin      Boolean
+  isSysAdmin   Boolean
+  createdAt    DateTime @default(now()) @db.Date
+  createdBy    Int
 }
 
 model users {
@@ -45,18 +48,18 @@ model clients {
 }
 
 model employees {
-  id             Int      @id @default(autoincrement())
-  identification String   @unique(map: "employee_identification") @db.VarChar(80)
-  fullname       String   @db.VarChar(150)
-  email          String   @db.VarChar(150)
-  address        String   @db.VarChar(150)
-  phone          String   @db.VarChar(150)
-  cellphone      String   @db.VarChar(80)
+  id             Int       @id @default(autoincrement())
+  identification String    @unique(map: "employee_identification") @db.VarChar(80)
+  fullname       String    @db.VarChar(150)
+  email          String    @db.VarChar(150)
+  address        String    @db.VarChar(150)
+  phone          String    @db.VarChar(150)
+  cellphone      String    @db.VarChar(80)
   isActive       Boolean
-  imageUrl       String?  @db.VarChar(500)
-  createdAt      DateTime @default(now()) @db.Date
+  imageUrl       String?   @db.VarChar(500)
+  createdAt      DateTime  @default(now()) @db.Date
   createdBy      Int
-  modifiedAt     Int?
+  modifiedAt     DateTime? @db.Date
   modifiedBy     Int?
 }
 
@@ -169,7 +172,7 @@ model reports {
 model visits {
   id         Int       @id @default(autoincrement())
   dateVisit  DateTime  @db.Date
-  timeVisite DateTime  @db.Time(0)
+  timeVisit  DateTime  @db.Time(0)
   employeeId Int
   clientId   Int
   details    String?   @db.Text

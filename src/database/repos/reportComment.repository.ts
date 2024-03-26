@@ -1,17 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-import { Profile } from '../models';
+import { ReportComment } from '../models';
 
-class ProfileRepository {
+class ReportCommentRepository {
     private prisma: PrismaClient;
 
     constructor() {
         this.prisma = new PrismaClient();
     }
 
-    async Create(profile: Profile): Promise<Profile> {
+    async Create(reportComment: ReportComment): Promise<ReportComment> {
         try {
-            const userEntry = await this.prisma.profiles.create({
-                data: profile
+            const userEntry = await this.prisma.reportComments.create({
+                data: reportComment
             });
             return userEntry;
             
@@ -20,9 +20,9 @@ class ProfileRepository {
         }
     }
 
-    async Update(id: number, dataToUpdate: Partial<Profile>, userId: number): Promise<Profile | null> {
+    async Update(id: number, dataToUpdate: Partial<ReportComment>, userId: number): Promise<ReportComment | null> {
         try {
-            const updated = await this.prisma.profiles.update({
+            const updated = await this.prisma.reportComments.update({
                 where: {
                     id
                 },
@@ -34,17 +34,17 @@ class ProfileRepository {
         }
     }
 
-    async GetAll(): Promise<Profile[]> {
+    async GetAll(): Promise<ReportComment[]> {
         try {
-            return await this.prisma.profiles.findMany();
+            return await this.prisma.reportComments.findMany();
         } catch (error) {
             throw error;
         }
     }
 
-    async GetById(id: number): Promise<Profile | null> {
+    async GetById(id: number): Promise<ReportComment | null> {
         try {
-            return await this.prisma.profiles.findFirst({
+            return await this.prisma.reportComments.findFirst({
                 where: { 
                     id
                 }
@@ -54,9 +54,9 @@ class ProfileRepository {
         }
     }
 
-    async Delete(id: number, userId: number): Promise<Profile | null> {
+    async Delete(id: number, userId: number): Promise<ReportComment | null> {
         try {
-            const deleted = await this.prisma.profiles.delete({
+            const deleted = await this.prisma.reportComments.delete({
                 where: {
                     id
                 }
@@ -68,4 +68,4 @@ class ProfileRepository {
     }
 }
 
-export default ProfileRepository;
+export default ReportCommentRepository;

@@ -1,6 +1,6 @@
 export interface ClientRequestResponse {
     id: number;
-    text: string;
+    comments: string;
     requestId: number;
     createdAt: Date;
     createdBy: number;

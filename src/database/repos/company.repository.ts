@@ -1,17 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-import { Profile } from '../models';
+import { Company } from '../models';
 
-class ProfileRepository {
+class CompanyRepository {
     private prisma: PrismaClient;
 
     constructor() {
         this.prisma = new PrismaClient();
     }
 
-    async Create(profile: Profile): Promise<Profile> {
+    async Create(company: Company): Promise<Company> {
         try {
-            const userEntry = await this.prisma.profiles.create({
-                data: profile
+            const userEntry = await this.prisma.company.create({
+                data: company
             });
             return userEntry;
             
@@ -20,9 +20,9 @@ class ProfileRepository {
         }
     }
 
-    async Update(id: number, dataToUpdate: Partial<Profile>, userId: number): Promise<Profile | null> {
+    async Update(id: number, dataToUpdate: Partial<Company>, userId: number): Promise<Company | null> {
         try {
-            const updated = await this.prisma.profiles.update({
+            const updated = await this.prisma.company.update({
                 where: {
                     id
                 },
@@ -34,17 +34,17 @@ class ProfileRepository {
         }
     }
 
-    async GetAll(): Promise<Profile[]> {
+    async GetAll(): Promise<Company[]> {
         try {
-            return await this.prisma.profiles.findMany();
+            return await this.prisma.company.findMany();
         } catch (error) {
             throw error;
         }
     }
 
-    async GetById(id: number): Promise<Profile | null> {
+    async GetById(id: number): Promise<Company | null> {
         try {
-            return await this.prisma.profiles.findFirst({
+            return await this.prisma.company.findFirst({
                 where: { 
                     id
                 }
@@ -54,9 +54,9 @@ class ProfileRepository {
         }
     }
 
-    async Delete(id: number, userId: number): Promise<Profile | null> {
+    async Delete(id: number, userId: number): Promise<Company | null> {
         try {
-            const deleted = await this.prisma.profiles.delete({
+            const deleted = await this.prisma.company.delete({
                 where: {
                     id
                 }
@@ -68,4 +68,4 @@ class ProfileRepository {
     }
 }
 
-export default ProfileRepository;
+export default CompanyRepository;

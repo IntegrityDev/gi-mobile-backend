@@ -3,7 +3,7 @@ export interface Visit {
     clientId: number;
     employeeId: number;
     dateVisit: Date;
-    timeVisit: string;
+    timeVisit: Date;
     details?: string | null;
     createdAt: Date;
     modifiedAt?: Date | null;
