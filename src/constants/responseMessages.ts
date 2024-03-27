@@ -10,7 +10,10 @@ const RESPONSE_MESSAGES = {
     USER_PROFILE_EXISTS: 'El usuario con esta identificacion ya tiene asignado este perfil',
     IDENTIFICATION_ALREADY_EXISTS: 'La identificación de este {entity} ya se encuentra registrada y activa.',
     EMAIL_ALREADY_EXISTS: 'El correo electronico de este {entity} ya se encuentra registrado',
-    EMPLOYEE_ALREADY_ASSIGNED: 'El colaborador ya se encuentra asignado a este cliente'
+    EMPLOYEE_ALREADY_ASSIGNED: 'El colaborador con identificación {identification}, ya se encuentra asignado a este cliente',
+    EMPLOYEES_ASSIGNED: 'Empleados asignados exitosamente',
+    EMPLOYEES_NOT_ASSIGNED: 'Los empleados no fueron asignados, por favor revise los mensajes de la aplicación',
+    EMPLOYEES_ASSIGNED_WITH_ERRORS: 'Empleados asignados exitosamente, algunos no fueron asignado por favor revisalos'
 }
 
 export default RESPONSE_MESSAGES

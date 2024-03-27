@@ -1,12 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import {
-  Client,
   ClientEmployee,
-  CreateClient,
   CreateClientEmployee,
   CustomError,
   Employee,
-  UpdateClient,
 } from "../models";
 import { RESPONSE_MESSAGES } from "../../constants";
 
@@ -32,9 +29,14 @@ class ClientEmployeeRepository {
         });
 
       if (existingClientEmployee) {
+        const employee = await this.prisma.employees.findUnique({
+            where: {
+                id: existingClientEmployee.employeeId
+            }
+        })
         customError = {
           created: false,
-          message: RESPONSE_MESSAGES.EMPLOYEE_ALREADY_ASSIGNED,
+          message: RESPONSE_MESSAGES.EMPLOYEE_ALREADY_ASSIGNED.replace("{identification}", employee?.identification || ""),
         };
         return customError;
       }
@@ -108,14 +110,28 @@ class ClientEmployeeRepository {
     }
   }
 
-  async Delete(id: number, userId: number): Promise<ClientEmployee | null> {
+  async Delete(
+    clientId: number,
+    employeeId: number,
+    userId: number
+  ): Promise<ClientEmployee | null> {
     try {
-      const deleted = await this.prisma.clientEmployees.delete({
-        where: {
-          id,
-        },
-      });
-      return deleted;
+      const existingClientEmployee =
+        await this.prisma.clientEmployees.findFirst({
+          where: {
+            clientId,
+            employeeId,
+          },
+        });
+      if (existingClientEmployee) {
+        const deleted = await this.prisma.clientEmployees.delete({
+          where: {
+            id: existingClientEmployee.id,
+          },
+        });
+        return deleted;
+      }
+      return null;
     } catch (error) {
       throw error;
     } finally {

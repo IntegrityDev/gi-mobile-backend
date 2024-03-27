@@ -1,6 +1,6 @@
 import { STATUS_CODES } from "../constants";
-import { CreateEmployee, Employee, UpdateEmployee } from "../database/models";
-import { EmployeeRepository } from "../database/repos";
+import { CreateClientEmployee, CreateEmployee, Employee, UpdateEmployee } from "../database/models";
+import { ClientEmployeeRepository, EmployeeRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
 class EmployeeService {
@@ -54,6 +54,44 @@ class EmployeeService {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async AssignClient(employeeId: number, clientId: number, userId: number) {  
+        try {
+            const clientEmployeeRepo = new ClientEmployeeRepository();
+            const clientEmployee: CreateClientEmployee = {
+                clientId,
+                employeeId,
+                createdBy: userId,
+                isActive: true
+            }
+            const entityCreated = await clientEmployeeRepo.Create(clientEmployee);
+            if ('created' in entityCreated && 'message' in entityCreated) {
+                return FormateData({
+                    ...entityCreated,
+                    statusCode: STATUS_CODES.BAD_REQUEST
+                })
+            }
+            return FormateData(entityCreated);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async RemoveClient(employeeId: number, clientId: number, userId: number) {  
+        try {
+            const clientEmployeeRepo = new ClientEmployeeRepository();
+            const clientEmployee: CreateClientEmployee = {
+                clientId,
+                employeeId,
+                createdBy: userId,
+                isActive: true
+            }
+            const entityCreated = await clientEmployeeRepo.Delete(clientId, employeeId, userId);
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }

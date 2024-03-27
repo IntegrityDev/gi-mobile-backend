@@ -79,4 +79,34 @@ export default function setupEmployeeRoutes(app: any): void {
             });
         }
     });
+
+    app.post('/employees/:id/client', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { id: userId } = req.user as { id: string };
+            const { clientId } = req.body;
+            const { data } = await service.AssignClient(+id!, clientId, +userId);
+            return res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD
+            });
+        }
+    });
+
+    app.delete('/employees/:id/client', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { id: userId } = req.user as { id: string };
+            const { clientId } = req.body;
+            const { data } = await service.RemoveClient(+id!, clientId, +userId);
+            return res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD
+            });
+        }
+    });
 }
