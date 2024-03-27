@@ -1,4 +1,5 @@
-import { Employee } from "../database/models";
+import { STATUS_CODES } from "../constants";
+import { CreateEmployee, Employee, UpdateEmployee } from "../database/models";
 import { EmployeeRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -9,16 +10,22 @@ class EmployeeService {
         this.repository = new EmployeeRepository();
     }
 
-    async Create(entry: Employee) {     
+    async Create(entry: CreateEmployee) {     
         try {
             const entityCreated = await this.repository.Create(entry);
-            return entityCreated;
+            if ('created' in entityCreated && 'message' in entityCreated) {
+                return FormateData({
+                    ...entityCreated,
+                    statusCode: STATUS_CODES.BAD_REQUEST
+                })
+            }
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }
     }
 
-    async Update(id: number, dataToUpdate: any, userId: number) {
+    async Update(id: number, dataToUpdate: Partial<UpdateEmployee>, userId: number) {
         try {
             const entryUpdated = await this.repository.Update(id, dataToUpdate, userId);
             return FormateData(entryUpdated);
@@ -27,7 +34,7 @@ class EmployeeService {
         }
     }
 
-    async GetAll(userId: number) {
+    async GetAll() {
         try {
             return FormateData(await this.repository.GetAll());
         } catch (error) {
@@ -43,7 +50,7 @@ class EmployeeService {
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

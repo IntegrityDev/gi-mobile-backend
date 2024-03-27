@@ -1,71 +1,121 @@
-import { PrismaClient } from '@prisma/client';
-import { Employee } from '../models';
+import { PrismaClient } from "@prisma/client";
+import { CreateEmployee, CustomError, Employee, UpdateEmployee } from "../models";
+import { RESPONSE_MESSAGES } from "../../constants";
 
 class EmployeeRepository {
-    private prisma: PrismaClient;
+  private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
-    }
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
 
-    async Create(employee: Employee): Promise<Employee> {
-        try {
-            const userEntry = await this.prisma.employees.create({
-                data: employee
-            });
-            return userEntry;
-            
-        } catch (error) {
-            throw error;
-        }
-    }
+  async Create(employee: CreateEmployee): Promise<Employee | CustomError> {
+    try {
+      let customError: CustomError;
+      const existingIdentificationClient =
+        await this.prisma.employees.findFirst({
+          where: {
+            identification: employee.identification,
+            isActive: true,
+          },
+        });
 
-    async Update(id: number, dataToUpdate: Partial<Employee>, userId: number): Promise<Employee | null> {
-        try {
-            const updated = await this.prisma.employees.update({
-                where: {
-                    id
-                },
-                data: dataToUpdate
-            });
-            return updated;
-        } catch (error) {
-            throw error;
-        }
-    }
+      if (existingIdentificationClient) {
+        customError = {
+          created: false,
+          message: RESPONSE_MESSAGES.IDENTIFICATION_ALREADY_EXISTS.replace(
+            "{entity}",
+            "colaborador"
+          ),
+        };
+        return customError;
+      }
 
-    async GetAll(): Promise<Employee[]> {
-        try {
-            return await this.prisma.employees.findMany();
-        } catch (error) {
-            throw error;
-        }
-    }
+      const existingEmailClient = await this.prisma.employees.findFirst({
+        where: {
+          email: employee.email,
+          isActive: true,
+        },
+      });
 
-    async GetById(id: number): Promise<Employee | null> {
-        try {
-            return await this.prisma.employees.findFirst({
-                where: { 
-                    id
-                }
-            });
-        } catch (error) {
-            throw error;
-        }
-    }
+      if (existingEmailClient) {
+        customError = {
+          created: false,
+          message: RESPONSE_MESSAGES.EMAIL_ALREADY_EXISTS.replace(
+            "{entity}",
+            "colaborador"
+          ),
+        };
+        return customError;
+      }
 
-    async Delete(id: number, userId: number): Promise<Employee | null> {
-        try {
-            const deleted = await this.prisma.employees.delete({
-                where: {
-                    id
-                }
-            });
-            return deleted;
-        } catch (error) {
-            throw error;
-        }
+      const userEntry = await this.prisma.employees.create({
+        data: employee,
+      });
+      return userEntry;
+    } catch (error) {
+      throw error;
     }
+  }
+
+  async Update(
+    id: number,
+    dataToUpdate: Partial<UpdateEmployee>,
+    userId: number
+  ): Promise<Employee | null> {
+    try {
+        const updated = await this.prisma.employees.update({
+            where: {
+              id,
+            },
+            data: {
+                ...dataToUpdate,
+                modifiedAt: new Date(),
+                modifiedBy: userId
+            },
+          });
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetAll(): Promise<Employee[]> {
+    try {
+      return await this.prisma.employees.findMany({
+        where: {
+          isActive: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetById(id: number): Promise<Employee | null> {
+    try {
+      return await this.prisma.employees.findFirst({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async Delete(id: number, userId: number): Promise<Employee | null> {
+    try {
+      const deleted = await this.prisma.employees.delete({
+        where: {
+          id,
+        },
+      });
+      return deleted;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default EmployeeRepository;

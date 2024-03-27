@@ -8,7 +8,7 @@ import { Company } from "./company.interface";
 import { DocumentType } from "./documentType.interface";
 import { EmployeeRequestComment } from "./employeeRequestComment";
 import { EmployeeRequest } from "./employeeRequest.interface";
-import { Employee } from "./employee.interface";
+import { Employee, CreateEmployee, UpdateEmployee } from "./employee.interface";
 import { ReportCommentPhoto } from "./reportCommentPhoto.interface";
 import { ReportComment } from "./reportComment.interface";
 import { ReportPhoto } from "./reportPhoto.interface";
@@ -33,6 +33,8 @@ export {
     Company,
     DocumentType,
     Employee,
+    CreateEmployee,
+    UpdateEmployee,
     EmployeeRequestComment,
     EmployeeRequest,
     Report,

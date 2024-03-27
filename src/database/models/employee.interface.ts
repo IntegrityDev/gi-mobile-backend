@@ -15,3 +15,6 @@ export interface Employee {
     isActive: boolean;
   }
   
+  export interface CreateEmployee extends Omit<Employee, 'id' | 'createdAt'> {}
+
+  export interface UpdateEmployee extends Omit<Employee, 'id' | 'identification' | 'createdAt' | 'createdBy'> {}
