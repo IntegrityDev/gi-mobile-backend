@@ -1,5 +1,6 @@
 import { User } from "../database/models";
 import { UserRepository } from "../database/repos";
+import { FormateData } from "../utils";
 
 class UserService {
     private repository: UserRepository;
@@ -17,39 +18,39 @@ class UserService {
         }
     }
 
-//     async UpdateAlert(id: number, dataToUpdate: any, userId: number) {
-//         try {
-//             const entryUpdated = await this.repository.UpdateAlert(id, dataToUpdate, userId);
-//             return FormateData(entryUpdated);
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
+    async UpdateUser(id: number, dataToUpdate: any, userId: number) {
+        try {
+            const entryUpdated = await this.repository.UpdateUser(id, dataToUpdate, userId);
+            return FormateData(entryUpdated);
+        } catch (error) {
+            throw error;
+        }
+    }
 
-//     async GetAllAlertsByUserId(userId: number) {
-//         try {
-//             return FormateData(await this.repository.GetAllAlertsByUserId(userId));
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
+    async GetAllUsers(userId: number) {
+        try {
+            return FormateData(await this.repository.GetAllUsers());
+        } catch (error) {
+            throw error;
+        }
+    }
 
-//     async GetAlertById(id: number) {
-//         try {
-//             return FormateData(await this.repository.GetAlertById({ id }));
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
+    async GetUserById(id: number) {
+        try {
+            return FormateData(await this.repository.GetUserById(id));
+        } catch (error) {
+            throw error;
+        }
+    }
 
-//     async DeleteAlert({ id, userId }: { id: number, userId: number }) {
-//         try {
-//             const { id: idDeleted, title } = await this.repository.DeleteAlert({ id, userId });
-//             return FormateData({ idDeleted, title });
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
+    async Delete({ id, userId }: { id: number, userId: number }) {
+        try {
+            const data = await this.repository.DeleteUser(id, userId);
+            return FormateData(data);
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default UserService;

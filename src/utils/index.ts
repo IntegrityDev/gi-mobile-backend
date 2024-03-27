@@ -48,18 +48,18 @@
 //     }
 // }
 
-// export function FormateData(data: any): { data: any; error?: { message: string } } {
-//     if (data) {
-//         return { data };
-//     } else {
-//         return {
-//             data: null,
-//             error: {
-//                 message: 'Data not found'
-//             }
-//         };
-//     }
-// }
+export function FormateData(data: any): { data: any; error?: { message: string } } {
+    if (data) {
+        return { data };
+    } else {
+        return {
+            data: null,
+            error: {
+                message: 'Data not found'
+            }
+        };
+    }
+}
 
 // export function ThreeDaysPassed(startDate: Date): boolean {
 //     try {
