@@ -12,7 +12,7 @@ class UserService {
     async CreateUser(user: User) {     
         try {
             const entityCreated = await this.repository.CreateUser(user);
-            return entityCreated;
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }

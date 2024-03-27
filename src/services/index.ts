@@ -11,7 +11,7 @@ import EmployeeRequestCommentService from './employeeRequestResponse.service';
 import ReportService from './report.service';
 import ReportCommentService from './reportComment.service';
 import ReportCommentPhotoService from './reportCommentPhoto.service';
-import ReportPhotoService from './reportPhoto.interface';
+import ReportPhotoService from './reportPhoto.service';
 import VisitService from './visit.service';
 
 export {
