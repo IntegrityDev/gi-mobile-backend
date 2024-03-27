@@ -1,4 +1,5 @@
-import { Client } from "../database/models";
+import { STATUS_CODES } from "../constants";
+import { Client, CreateClient, UpdateClient } from "../database/models";
 import { ClientRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -9,16 +10,22 @@ class ClientService {
         this.repository = new ClientRepository();
     }
 
-    async Create(profile: Client) {     
+    async Create(client: CreateClient) {     
         try {
-            const entityCreated = await this.repository.Create(profile);
-            return entityCreated;
+            const entityCreated = await this.repository.Create(client);
+            if ('created' in entityCreated && 'message' in entityCreated) {
+                return FormateData({
+                    ...entityCreated,
+                    statusCode: STATUS_CODES.BAD_REQUEST
+                })
+            }
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }
     }
 
-    async Update(id: number, dataToUpdate: any, userId: number) {
+    async Update(id: number, dataToUpdate: Partial<UpdateClient>, userId: number) {
         try {
             const entryUpdated = await this.repository.Update(id, dataToUpdate, userId);
             return FormateData(entryUpdated);
@@ -27,7 +34,7 @@ class ClientService {
         }
     }
 
-    async GetAll(userId: number) {
+    async GetAll() {
         try {
             return FormateData(await this.repository.GetAll());
         } catch (error) {
@@ -43,7 +50,15 @@ class ClientService {
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async GetEmployeesByClientId(id: number) {
+        try {
+            return FormateData(await this.repository.GetEmployeesByClientId(id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

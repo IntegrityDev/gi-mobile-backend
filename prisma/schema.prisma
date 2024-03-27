@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -185,14 +185,12 @@ model visits {
 }
 
 model userProfiles {
-  id               Int       @default(autoincrement())
-  identificationId Int
-  profileId        Int
-  isDeleted        Boolean
-  createdAt        DateTime  @default(now()) @db.Date
-  createdBy        Int
-  modifiedAt       DateTime? @db.Date
-  modifiedBy       Int?
-
-  @@id([id, identificationId])
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  profileId  Int
+  isDeleted  Boolean
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  createdBy  Int
+  modifiedAt DateTime? @db.Timestamp(0)
+  modifiedBy Int?
 }

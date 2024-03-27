@@ -1,6 +1,6 @@
 import { ValidatePassword, GenerateSignature, FormateData, GenerateSalt, GeneratePassword, ComparePassword } from "../utils";
 import { RESPONSE_MESSAGES, STATUS_CODES } from "../constants";
-import { UserRepository } from "../database/repos";
+import { UserProfileRepository, UserRepository } from "../database/repos";
 import { CreateUser, User } from "../database/models";
 
 interface UserInputs {
@@ -13,9 +13,11 @@ interface UserInputs {
 
 class AuthService {
     private repository: UserRepository;
+    private userProfileRepo: UserProfileRepository
 
     constructor() {
         this.repository = new UserRepository();
+        this.userProfileRepo = new UserProfileRepository();
     }
 
     public async SignIn(userInputs: UserInputs): Promise<any> {
@@ -36,6 +38,10 @@ class AuthService {
                 if (isValidPassword) {
                     const { identificationId: identification, id } = existingUser;
                     const token: string = await GenerateSignature({ identification, id });
+                    //Get user profiles
+                    const userProfiles = await this.userProfileRepo.GetAllByUserId(existingUser.id);
+                    console.log("Profiles User", userProfiles)
+
                     return FormateData({ 
                         signed: true, 
                         id: existingUser.id, 
@@ -80,9 +86,7 @@ class AuthService {
                 isDeleted: false
             }
             existingUser = await this.repository.CreateUser(newUser);
-            const { identificationId: identification, id } = existingUser;
-            const token: string = await GenerateSignature({ identification, id });
-            return FormateData({ created: true, id, token});
+            return FormateData({ created: true, user: existingUser.id});
             
         } catch (error) {
             throw error;

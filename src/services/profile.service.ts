@@ -43,7 +43,7 @@ class ProfileService {
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

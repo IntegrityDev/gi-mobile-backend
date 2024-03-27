@@ -14,3 +14,6 @@ export interface Client {
     isActive: boolean;
   }
   
+  export interface CreateClient extends Omit<Client, 'id' | 'createdAt'> {}
+
+  export interface UpdateClient extends Omit<Client, 'id' | 'identification' | 'createdAt' | 'createdBy'> {}

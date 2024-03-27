@@ -8,10 +8,15 @@ class UserProfileRepository {
         this.prisma = new PrismaClient();
     }
 
-    async Create(profile: UserProfile): Promise<UserProfile> {
+    async Create(userId: number, profileId: number, createdBy: number): Promise<UserProfile> {
         try {
             const userEntry = await this.prisma.userProfiles.create({
-                data: profile
+                data: {
+                    userId,
+                    profileId,
+                    createdBy,
+                    isDeleted: false
+                }
             });
             return userEntry;
             
@@ -20,28 +25,38 @@ class UserProfileRepository {
         }
     }
 
-    async GetAllByUserId(identificationId: number): Promise<UserProfile[]> {
+    async GetAllByUserId(userId: number): Promise<UserProfile[]> {
         try {
-            return await this.prisma.userProfiles.findMany({
-                where: {
-                    isDeleted: false,
-                    identificationId: identificationId
-                }
-            });
+          return await this.prisma.userProfiles.findMany({
+            where: {
+              isDeleted: false,
+              userId,
+            },
+          });
         } catch (error) {
-            throw error;
+          throw error;
         }
     }
 
-    async Delete(id: number, identificationId: number, profileId: number, userId: number): Promise<UserProfile | null> {
+    async GetByUserIdAndProfileId(userId: number, profileId: number): Promise<UserProfile | null> {
+        try {
+          return await this.prisma.userProfiles.findFirst({
+            where: {
+              isDeleted: false,
+              userId,
+              profileId
+            },
+          });
+        } catch (error) {
+          throw error;
+        }
+    }
+
+    async Delete(id: number, userId: number): Promise<UserProfile | null> {
         try {
             const deleted = await this.prisma.userProfiles.update({
                 where: {
-                    id_identificationId: {
-                        id: id,
-                        identificationId: identificationId
-                    },
-                    profileId
+                    id
                 }, 
                 data:{
                     modifiedAt: new Date(),

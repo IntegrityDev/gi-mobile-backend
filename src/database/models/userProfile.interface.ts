@@ -1,6 +1,6 @@
 export interface UserProfile {
     id: number;
-    identificationId: number;
+    userId: number;
     profileId: number;
     isDeleted: boolean;
     createdAt: Date;

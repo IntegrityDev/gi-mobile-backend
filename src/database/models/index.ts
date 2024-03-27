@@ -2,7 +2,7 @@ import { User, CreateUser, ListUser, UserEmployee } from "./user.interface";
 import { Profile } from "./profiles.interface";
 import { UserProfile } from "./userProfile.interface";
 import { ClientRequestResponse } from "./clientRequestResponse";
-import { Client } from "./client.interface";
+import { Client, CreateClient, UpdateClient } from "./client.interface";
 import { ClientRequest } from "./clientRequest.interface";
 import { Company } from "./company.interface";
 import { DocumentType } from "./documentType.interface";
@@ -15,6 +15,7 @@ import { ReportPhoto } from "./reportPhoto.interface";
 import { Report } from "./report.interface";
 import { Visit } from "./visit.interface";
 import { CustomRequest } from "./customRequest.interface";
+import { CustomError } from "./customError.interface";
 
 export {
     CustomRequest,
@@ -26,6 +27,8 @@ export {
     UserProfile,
     ClientRequestResponse,
     Client,
+    CreateClient,
+    UpdateClient,
     ClientRequest,
     Company,
     DocumentType,
@@ -36,5 +39,6 @@ export {
     ReportCommentPhoto,
     ReportComment,
     ReportPhoto,
-    Visit
+    Visit,
+    CustomError
 }

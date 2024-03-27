@@ -21,7 +21,7 @@ export async function ValidatePassword(
 
 export async function GenerateSignature(payload: any): Promise<string> {
     try {
-        return await jwt.sign(payload, APP_SECRET as string, { expiresIn: "30d" });
+        return await jwt.sign(payload, APP_SECRET as string, { expiresIn: "15d" });
     } catch (error) {
         console.error(error);
         return error as string;
