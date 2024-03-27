@@ -13,6 +13,7 @@ import ReportCommentService from './reportComment.service';
 import ReportCommentPhotoService from './reportCommentPhoto.service';
 import ReportPhotoService from './reportPhoto.service';
 import VisitService from './visit.service';
+import AuthService from './auth.service';
 
 export {
   UserService,
@@ -29,5 +30,6 @@ export {
   ReportCommentService,
   ReportCommentPhotoService,
   ReportPhotoService,
-  VisitService
+  VisitService,
+  AuthService
 };

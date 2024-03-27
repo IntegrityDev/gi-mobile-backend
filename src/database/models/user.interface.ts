@@ -1,3 +1,5 @@
+import { Employee } from "./employee.interface";
+
 export interface User {
   id: number;
   identificationId: string;
@@ -9,4 +11,16 @@ export interface User {
   modifiedBy?: number | null;
   createdBy?: number | null;
   isDeleted?: boolean | null   
+}
+
+export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {}
+
+export interface ListUser extends Omit<User, 'password' | 'salt' > {
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+}
+
+export interface UserEmployee extends Omit<User, 'password' | 'salt' > {
+  employee: Employee
 }

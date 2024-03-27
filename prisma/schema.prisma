@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -21,9 +22,9 @@ model profiles {
 model users {
   id               Int       @id @default(autoincrement())
   identificationId String    @db.VarChar(80)
-  password         String    @db.VarChar(150)
+  password         String    @db.VarChar(300)
   isVerified       Boolean
-  salt             String    @db.VarChar(150)
+  salt             String    @db.VarChar(300)
   createdAt        DateTime  @default(now()) @db.Date
   createdBy        Int?
   modifiedAt       DateTime? @db.Date
@@ -50,7 +51,8 @@ model clients {
 model employees {
   id             Int       @id @default(autoincrement())
   identification String    @unique(map: "employee_identification") @db.VarChar(80)
-  fullname       String    @db.VarChar(150)
+  firstName      String    @db.VarChar(150)
+  lastName       String    @db.VarChar(150)
   email          String    @db.VarChar(150)
   address        String    @db.VarChar(150)
   phone          String    @db.VarChar(150)

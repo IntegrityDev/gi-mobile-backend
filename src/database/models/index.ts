@@ -1,4 +1,4 @@
-import { User } from "./user.interface";
+import { User, CreateUser, ListUser, UserEmployee } from "./user.interface";
 import { Profile } from "./profiles.interface";
 import { UserProfile } from "./userProfile.interface";
 import { ClientRequestResponse } from "./clientRequestResponse";
@@ -14,9 +14,14 @@ import { ReportComment } from "./reportComment.interface";
 import { ReportPhoto } from "./reportPhoto.interface";
 import { Report } from "./report.interface";
 import { Visit } from "./visit.interface";
+import { CustomRequest } from "./customRequest.interface";
 
 export {
+    CustomRequest,
     User,
+    CreateUser,
+    ListUser,
+    UserEmployee,
     Profile,
     UserProfile,
     ClientRequestResponse,

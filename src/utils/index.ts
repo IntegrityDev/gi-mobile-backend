@@ -19,7 +19,7 @@ export async function ValidatePassword(
     return (await GeneratePassword(enteredPassword, salt)) === savedPassword;
 }
 
-export async function GenerateSignature(payload: any): Promise<string | Error> {
+export async function GenerateSignature(payload: any): Promise<string> {
     try {
         return await jwt.sign(payload, APP_SECRET as string, { expiresIn: "30d" });
     } catch (error) {
