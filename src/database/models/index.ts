@@ -16,6 +16,7 @@ import { Report } from "./report.interface";
 import { Visit } from "./visit.interface";
 import { CustomRequest } from "./customRequest.interface";
 import { CustomError } from "./customError.interface";
+import { ClientEmployee, CreateClientEmployee } from "./clientEmployee.interface";
 
 export {
     CustomRequest,
@@ -27,6 +28,7 @@ export {
     UserProfile,
     ClientRequestResponse,
     Client,
+    CreateClientEmployee,
     CreateClient,
     UpdateClient,
     ClientRequest,
@@ -42,5 +44,6 @@ export {
     ReportComment,
     ReportPhoto,
     Visit,
-    CustomError
+    CustomError,
+    ClientEmployee
 }

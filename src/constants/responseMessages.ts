@@ -9,7 +9,8 @@ const RESPONSE_MESSAGES = {
     ERROR_500: "Error interno del servidor",
     USER_PROFILE_EXISTS: 'El usuario con esta identificacion ya tiene asignado este perfil',
     IDENTIFICATION_ALREADY_EXISTS: 'La identificación de este {entity} ya se encuentra registrada y activa.',
-    EMAIL_ALREADY_EXISTS: 'El correo electronico de este {entity} ya se encuentra registrado'
+    EMAIL_ALREADY_EXISTS: 'El correo electronico de este {entity} ya se encuentra registrado',
+    EMPLOYEE_ALREADY_ASSIGNED: 'El colaborador ya se encuentra asignado a este cliente'
 }
 
 export default RESPONSE_MESSAGES
