@@ -40,7 +40,7 @@ class AuthService {
                     const token: string = await GenerateSignature({ identification, id });
                     //Get user profiles
                     const userProfiles = await this.userProfileRepo.GetAllByUserId(existingUser.id);
-                    console.log("Profiles User", userProfiles)
+                    // console.log("Profiles User", userProfiles)
 
                     return FormateData({ 
                         signed: true, 
