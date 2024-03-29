@@ -8,7 +8,7 @@ import { ClientService } from '../services';
 export default function setupClientRoutes(app: any): void {
     const service = new ClientService();
     
-    app.get('/clients', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/clients',  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetAll();
             return res.json(data);
