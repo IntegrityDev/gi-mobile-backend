@@ -54,7 +54,8 @@ class VisitRepository {
                     id
                 },
                 include: {
-                    clients: true
+                    clients: true,
+                    employees: true
                 }
             });
         } catch (error) {
