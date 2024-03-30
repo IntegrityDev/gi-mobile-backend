@@ -1,4 +1,4 @@
-import { Visit } from "../database/models";
+import { CreateVisit, Visit } from "../database/models";
 import { VisitRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -9,10 +9,10 @@ class VisitService {
         this.repository = new VisitRepository();
     }
 
-    async Create(entry: Visit) {     
+    async Create(entry: CreateVisit) {     
         try {
             const entityCreated = await this.repository.Create(entry);
-            return entityCreated;
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }
@@ -27,7 +27,7 @@ class VisitService {
         }
     }
 
-    async GetAll(userId: number) {
+    async GetAll() {
         try {
             return FormateData(await this.repository.GetAll());
         } catch (error) {
@@ -43,7 +43,7 @@ class VisitService {
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

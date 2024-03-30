@@ -13,7 +13,7 @@ import { ReportCommentPhoto } from "./reportCommentPhoto.interface";
 import { ReportComment } from "./reportComment.interface";
 import { ReportPhoto } from "./reportPhoto.interface";
 import { Report } from "./report.interface";
-import { Visit } from "./visit.interface";
+import { Visit, CreateVisit, UpdateVisit } from "./visit.interface";
 import { CustomRequest } from "./customRequest.interface";
 import { CustomError } from "./customError.interface";
 import { ClientEmployee, CreateClientEmployee } from "./clientEmployee.interface";
@@ -44,6 +44,8 @@ export {
     ReportComment,
     ReportPhoto,
     Visit,
+    CreateVisit,
+    UpdateVisit,
     CustomError,
     ClientEmployee
 }

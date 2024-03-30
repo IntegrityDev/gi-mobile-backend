@@ -46,6 +46,7 @@ model clients {
   createdBy      Int
   modifiedAt     DateTime? @db.Date
   modifiedBy     Int?
+  visits         visits[]
 }
 
 model employees {
@@ -63,6 +64,7 @@ model employees {
   createdBy      Int
   modifiedAt     DateTime? @db.Date
   modifiedBy     Int?
+  visits         visits[]
 }
 
 model company {
@@ -182,6 +184,11 @@ model visits {
   modifiedAt DateTime? @db.Date
   modifiedBy Int?
   isDeleted  Boolean
+  clients    clients   @relation(fields: [clientId], references: [id], onUpdate: Restrict, map: "fk_visits_client")
+  employees  employees @relation(fields: [employeeId], references: [id], onUpdate: Restrict, map: "fk_visits_employee")
+
+  @@index([clientId], map: "fk_visits_client")
+  @@index([employeeId], map: "fk_visits_employee")
 }
 
 model userProfiles {

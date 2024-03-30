@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Visit } from '../models';
+import { CreateVisit, Visit } from '../models';
 
 class VisitRepository {
     private prisma: PrismaClient;
@@ -8,7 +8,7 @@ class VisitRepository {
         this.prisma = new PrismaClient();
     }
 
-    async Create(visit: Visit): Promise<Visit> {
+    async Create(visit: CreateVisit): Promise<Visit> {
         try {
             const userEntry = await this.prisma.visits.create({
                 data: visit
@@ -36,7 +36,12 @@ class VisitRepository {
 
     async GetAll(): Promise<Visit[]> {
         try {
-            return await this.prisma.visits.findMany();
+            return await this.prisma.visits.findMany({
+                include: {
+                    employees: true,
+                    clients: true
+                }
+            });
         } catch (error) {
             throw error;
         }
@@ -47,6 +52,9 @@ class VisitRepository {
             return await this.prisma.visits.findFirst({
                 where: { 
                     id
+                },
+                include: {
+                    clients: true
                 }
             });
         } catch (error) {
