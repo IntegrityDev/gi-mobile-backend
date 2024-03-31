@@ -4,6 +4,7 @@ import setupProfileRoutes from "./profile";
 import setupClientRoutes from "./client";
 import setupEmployeeRoutes from "./employee";
 import setupVisitRoutes from "./visit";
+import setupLaborAreaRoutes from "./laborArea";
 
 export {
     setupAuthRoutes,
@@ -11,5 +12,6 @@ export {
     setupProfileRoutes,
     setupClientRoutes,
     setupEmployeeRoutes,
-    setupVisitRoutes
+    setupVisitRoutes,
+    setupLaborAreaRoutes
 }

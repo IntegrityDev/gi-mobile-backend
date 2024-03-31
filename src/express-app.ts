@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import cors from "cors";
-import { setupAuthRoutes, setupClientRoutes, setupEmployeeRoutes, setupProfileRoutes, setupUserRoutes, setupVisitRoutes } from "./api";
+import { setupAuthRoutes, setupClientRoutes, setupEmployeeRoutes, setupLaborAreaRoutes, setupProfileRoutes, setupUserRoutes, setupVisitRoutes } from "./api";
 
 export default async function configureApp(app: Express): Promise<void> {
     app.use(express.json({ limit: "1mb" }));
@@ -15,4 +15,5 @@ export default async function configureApp(app: Express): Promise<void> {
     setupClientRoutes(app);
     setupEmployeeRoutes(app);
     setupVisitRoutes(app);
+    setupLaborAreaRoutes(app);
 }

@@ -15,6 +15,7 @@ import ReportPhotoService from './reportPhoto.service';
 import VisitService from './visit.service';
 import AuthService from './auth.service';
 import UserProfileService from './userProfile.service';
+import LaborAreaService from './laborArea.service';
 
 export {
   UserService,
@@ -33,5 +34,6 @@ export {
   ReportPhotoService,
   VisitService,
   AuthService,
-  UserProfileService
+  UserProfileService,
+  LaborAreaService
 };

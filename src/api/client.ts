@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
 import AuthMiddleware from './middlewares/auth';
 import { CustomRequest } from '../database/models';
-import { ClientService } from '../services';
+import { ClientService, LaborAreaService } from '../services';
 
 
 export default function setupClientRoutes(app: any): void {

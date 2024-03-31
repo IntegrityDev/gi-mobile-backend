@@ -15,6 +15,7 @@ import ReportCommentPhotoRepository from "./reportCommentPhoto.repository";
 import ReportPhotoRepository from "./reportPhoto.repository";
 import VisitRepository from "./visit.repository";
 import ClientEmployeeRepository from "./clientEmployee.repository";
+import LaborAreaRepository from "./laborArea.repository";
 
 export {
     UserRepository,
@@ -33,5 +34,6 @@ export {
     ReportCommentPhotoRepository,
     ReportPhotoRepository,
     VisitRepository,
-    ClientEmployeeRepository
+    ClientEmployeeRepository,
+    LaborAreaRepository
 }
