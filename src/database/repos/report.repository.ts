@@ -62,6 +62,18 @@ class ReportRepository {
         }
     }
 
+    async GetByVisitId(visitId: number): Promise<Report[] | null> {
+        try {
+            return await this.prisma.reports.findMany({
+                where: { 
+                    visitId
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async Delete(id: number, userId: number): Promise<Report | null> {
         try {
             const deleted = await this.prisma.reports.delete({

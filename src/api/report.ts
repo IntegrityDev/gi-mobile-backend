@@ -18,6 +18,16 @@ export default function setupReportRoutes(app: any): void {
         }
     });
 
+    app.get('/reports/visit/:visitId', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { visitId } = req.params;
+            const { data } = await service.GetByVisitId(+visitId);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
+
     app.get('/reports/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;

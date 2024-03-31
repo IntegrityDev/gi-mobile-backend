@@ -43,6 +43,14 @@ class ReportService {
         }
     }
 
+    async GetByVisitId(visitId: number) {
+        try {
+            return FormateData(await this.repository.GetByVisitId(visitId));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
