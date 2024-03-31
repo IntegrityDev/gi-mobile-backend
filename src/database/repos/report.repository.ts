@@ -67,6 +67,9 @@ class ReportRepository {
             return await this.prisma.reports.findMany({
                 where: { 
                     visitId
+                },
+                include: {
+                    laborAreas: true
                 }
             });
         } catch (error) {
