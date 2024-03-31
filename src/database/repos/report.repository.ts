@@ -40,7 +40,11 @@ class ReportRepository {
 
     async GetAll(): Promise<Report[]> {
         try {
-            return await this.prisma.reports.findMany();
+            return await this.prisma.reports.findMany({
+                include: {
+                    laborAreas: true
+                }
+            });
         } catch (error) {
             throw error;
         }

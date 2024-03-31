@@ -177,10 +177,12 @@ model reports {
   modifiedAt   DateTime?  @db.Date
   modifiedBy   Int?
   employees    employees? @relation(fields: [toEmployeeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_employee")
+  laborAreas   laborAreas @relation(fields: [laborAreaId], references: [id], onUpdate: Restrict, map: "fk_reports_labor_area")
   visits       visits     @relation(fields: [visitId], references: [id], onUpdate: Restrict, map: "fk_reports_visit")
 
   @@index([toEmployeeId], map: "fk_reports_employee")
   @@index([visitId], map: "fk_reports_visits")
+  @@index([laborAreaId], map: "fk_reports_labor_area")
 }
 
 model visits {
@@ -225,7 +227,8 @@ model clientEmployees {
 }
 
 model laborAreas {
-  id       Int     @id @default(autoincrement())
-  name     String  @db.VarChar(150)
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(150)
   isActive Boolean
+  reports  reports[]
 }
