@@ -11,7 +11,10 @@ class VisitRepository {
     async Create(visit: CreateVisit): Promise<Visit> {
         try {
             const userEntry = await this.prisma.visits.create({
-                data: visit
+                data: visit,
+                include: {
+                    clients: true
+                }
             });
             return userEntry;
             
