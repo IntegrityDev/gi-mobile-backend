@@ -166,19 +166,21 @@ model reportPhotos {
 
 model reports {
   id           Int        @id @default(autoincrement())
-  visitId      Int        @unique(map: "visit_id")
+  visitId      Int
   laborAreaId  Int
   news         String?    @db.VarChar(150)
   report       String     @db.Text
   toEmployeeId Int?
   isDeleted    Boolean
-  createdAt    DateTime   @db.Date
+  createdBy    Int
+  createdAt    DateTime   @default(now()) @db.Date
   modifiedAt   DateTime?  @db.Date
   modifiedBy   Int?
   employees    employees? @relation(fields: [toEmployeeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_employee")
   visits       visits     @relation(fields: [visitId], references: [id], onUpdate: Restrict, map: "fk_reports_visit")
 
   @@index([toEmployeeId], map: "fk_reports_employee")
+  @@index([visitId], map: "fk_reports_visits")
 }
 
 model visits {
@@ -192,7 +194,7 @@ model visits {
   modifiedAt DateTime? @db.Date
   modifiedBy Int?
   isDeleted  Boolean
-  reports    reports?
+  reports    reports[]
   clients    clients   @relation(fields: [clientId], references: [id], onUpdate: Restrict, map: "fk_visits_client")
   employees  employees @relation(fields: [employeeId], references: [id], onUpdate: Restrict, map: "fk_visits_employee")
 

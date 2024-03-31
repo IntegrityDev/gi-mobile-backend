@@ -1,4 +1,4 @@
-import { Report } from "../database/models";
+import { CreateReport, Report } from "../database/models";
 import { ReportRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -9,10 +9,10 @@ class ReportService {
         this.repository = new ReportRepository();
     }
 
-    async Create(entry: Report) {     
+    async Create(entry: CreateReport) {     
         try {
             const entityCreated = await this.repository.Create(entry);
-            return entityCreated;
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }
@@ -43,7 +43,7 @@ class ReportService {
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

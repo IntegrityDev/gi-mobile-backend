@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Report } from '../models';
+import { CreateReport, Report } from '../models';
 
 class ReportRepository {
     private prisma: PrismaClient;
@@ -8,10 +8,14 @@ class ReportRepository {
         this.prisma = new PrismaClient();
     }
 
-    async Create(report: Report): Promise<Report> {
+    async Create(report: CreateReport): Promise<Report | null> {
         try {
             const userEntry = await this.prisma.reports.create({
-                data: report
+                data: report,
+                include: {
+                    visits: true,
+                    employees: true
+                }
             });
             return userEntry;
             

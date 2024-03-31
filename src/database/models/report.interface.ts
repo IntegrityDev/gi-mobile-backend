@@ -9,5 +9,9 @@ export interface Report {
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
     isDeleted: boolean;
+    createdBy: number;
   }
   
+  export interface CreateReport extends Omit<Report, 'id' | 'createdAt'> {}
+
+  export interface UpdateReport extends Omit<Report, 'id' | 'identification' | 'createdAt' | 'createdBy'> {}
