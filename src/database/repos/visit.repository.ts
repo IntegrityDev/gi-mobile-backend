@@ -58,7 +58,8 @@ class VisitRepository {
                 },
                 include: {
                     clients: true,
-                    employees: true
+                    employees: true,
+                    reports: true
                 }
             });
         } catch (error) {

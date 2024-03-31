@@ -13,7 +13,7 @@ export interface Visit {
     modifiedBy?: number | null;
     isDeleted: boolean;
     client?: Client | null;
-    employee?:  Employee | null
+    employee?:  Employee | null;
   }
 
   export interface CreateVisit extends Omit<Visit, 'id' | 'createdAt'> {}
