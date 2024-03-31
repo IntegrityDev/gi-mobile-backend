@@ -8,7 +8,7 @@ import { EmployeeService } from '../services';
 export default function setupEmployeeRoutes(app: any): void {
     const service = new EmployeeService();
     
-    app.get('/employees',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/employees', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetAll();
             return res.json(data);
