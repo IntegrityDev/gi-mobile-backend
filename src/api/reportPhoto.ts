@@ -115,6 +115,7 @@ export default function setupReportPhotoRoutes(app: any): void {
         }
         const uploadedImages = await Promise.all(uploadPromises);
         console.log("Imágenes subidas a Cloudinary");
+        console.log(uploadedImages)
         const reportPhotos = [];
         const { id: userId } = req.user as { id: number };
         for (const uploadedImage of uploadedImages) {
