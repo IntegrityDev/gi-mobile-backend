@@ -81,6 +81,7 @@ export default function setupReportPhotoRoutes(app: any): void {
         const reportId = req.body.reportId;
         const uploadPromises: any[] = [];
         const tempFilesCreated: string[] = [];
+        const options = { folder: "reports"}
 
         for (const image of req.files as any[]) {
           const isJPEG = image.mimetype === "image/jpeg";
@@ -94,7 +95,7 @@ export default function setupReportPhotoRoutes(app: any): void {
               .withMetadata()
               .toFile(fileName)
               .then(() => {
-                uploadPromise = cloudinary.v2.uploader.upload(fileName);
+                uploadPromise = cloudinary.v2.uploader.upload(fileName, options);
                 uploadPromises.push(uploadPromise);
                 tempFilesCreated.push(fileName);
               })
@@ -105,7 +106,7 @@ export default function setupReportPhotoRoutes(app: any): void {
               .withMetadata()
               .toFile(fileName)
               .then(() => {
-                uploadPromise = cloudinary.v2.uploader.upload(fileName);
+                uploadPromise = cloudinary.v2.uploader.upload(fileName, options);
                 uploadPromises.push(uploadPromise);
                 tempFilesCreated.push(fileName);
               })
