@@ -99,7 +99,9 @@ export default function setupReportPhotoRoutes(app: any): void {
                 uploadPromises.push(uploadPromise);
                 tempFilesCreated.push(fileName);
               })
-              .catch(() => {});
+              .catch((error: any) => {
+                console.log("error jpg", error)
+              });
           } else if (isPNG) {
             await sharp(image.path)
               .png({ compressionLevel: 5 })
@@ -110,7 +112,9 @@ export default function setupReportPhotoRoutes(app: any): void {
                 uploadPromises.push(uploadPromise);
                 tempFilesCreated.push(fileName);
               })
-              .catch(() => {});
+              .catch((error: any) => {
+                console.log("error png", error)
+              });
           }
         }
         const uploadedImages = await Promise.all(uploadPromises);
