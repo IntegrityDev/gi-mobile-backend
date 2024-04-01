@@ -6,6 +6,7 @@ import setupEmployeeRoutes from "./employee";
 import setupVisitRoutes from "./visit";
 import setupLaborAreaRoutes from "./laborArea";
 import setupReportRoutes from "./report";
+import setupReportPhotoRoutes from "./reportPhoto";
 
 export {
     setupAuthRoutes,
@@ -15,5 +16,6 @@ export {
     setupEmployeeRoutes,
     setupVisitRoutes,
     setupLaborAreaRoutes,
-    setupReportRoutes
+    setupReportRoutes,
+    setupReportPhotoRoutes
 }

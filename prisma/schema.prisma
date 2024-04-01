@@ -156,12 +156,15 @@ model reportComments {
 model reportPhotos {
   id         Int       @id @default(autoincrement())
   reportId   Int
+  publicId   String    @db.VarChar(200)
+  url        String    @db.VarChar(500)
+  secureUrl  String    @db.VarChar(500)
   imageUrl   String    @db.VarChar(500)
   isDeleted  Boolean
   createdAt  DateTime  @default(now()) @db.Date
   createdBy  Int
   modifiedAt DateTime? @db.Date
-  modifiedBy Int
+  modifiedBy Int?
 }
 
 model reports {

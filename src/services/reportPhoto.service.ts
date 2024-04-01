@@ -1,4 +1,4 @@
-import { ReportPhoto } from "../database/models";
+import { CreateReportPhoto, ReportPhoto } from "../database/models";
 import { ReportPhotoRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -9,10 +9,10 @@ class ReportPhotoService {
         this.repository = new ReportPhotoRepository();
     }
 
-    async Create(entry: ReportPhoto) {     
+    async Create(entry: CreateReportPhoto[]) {     
         try {
             const entityCreated = await this.repository.Create(entry);
-            return entityCreated;
+            return FormateData(entityCreated);
         } catch (error) {
             throw error;
         }
@@ -35,15 +35,15 @@ class ReportPhotoService {
         }
     }
 
-    async GetById(id: number) {
+    async GetByReportId(id: number) {
         try {
-            return FormateData(await this.repository.GetById(id));
+            return FormateData(await this.repository.GetByReportId(id));
         } catch (error) {
             throw error;
         }
     }
 
-    async Delete({ id, userId }: { id: number, userId: number }) {
+    async Delete(id: number, userId: number ) {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);

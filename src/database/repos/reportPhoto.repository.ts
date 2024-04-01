@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ReportPhoto } from '../models';
+import { CreateReportPhoto, ReportPhoto } from '../models';
 
 class ReportPhotoRepository {
     private prisma: PrismaClient;
@@ -8,10 +8,10 @@ class ReportPhotoRepository {
         this.prisma = new PrismaClient();
     }
 
-    async Create(reportPhoto: ReportPhoto): Promise<ReportPhoto> {
+    async Create(reportPhotos: CreateReportPhoto[]): Promise<any> {
         try {
-            const userEntry = await this.prisma.reportPhotos.create({
-                data: reportPhoto
+            const userEntry = await this.prisma.reportPhotos.createMany({
+                data: reportPhotos
             });
             return userEntry;
             
@@ -42,11 +42,11 @@ class ReportPhotoRepository {
         }
     }
 
-    async GetById(id: number): Promise<ReportPhoto | null> {
+    async GetByReportId(id: number): Promise<ReportPhoto[] | null> {
         try {
-            return await this.prisma.reportPhotos.findFirst({
+            return await this.prisma.reportPhotos.findMany({
                 where: { 
-                    id
+                    reportId: id
                 }
             });
         } catch (error) {
