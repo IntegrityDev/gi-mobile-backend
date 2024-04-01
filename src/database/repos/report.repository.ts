@@ -86,7 +86,8 @@ class ReportRepository {
                     visitId
                 },
                 include: {
-                    laborAreas: true
+                    laborAreas: true,
+                    reportPhotos: true
                 }
             });
         } catch (error) {

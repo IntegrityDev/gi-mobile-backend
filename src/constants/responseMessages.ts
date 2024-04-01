@@ -1,5 +1,6 @@
 const RESPONSE_MESSAGES = {
     USER_EXISTS: 'Ya existe un usuario con esa identificación.',
+    USER_NO_HAVE_EMPLOYEE: 'No hay un empleado relacionado a este numero de identificación',
     WRONG_LOGIN: 'La identificación o contraseña son incorrectas.',
     PASSWORD_CHANGED: 'La contraseña se ha cambiado correctamente.',
     PASSWORD_NOT_CHANGE: 'No se pudo cambiar la contraseña. Por favor, inténtelo de nuevo más tarde.',

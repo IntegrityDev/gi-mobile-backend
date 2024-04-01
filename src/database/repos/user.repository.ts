@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateUser, ListUser, User, UserEmployee } from "../models";
+import { CreateUser, Employee, ListUser, User, UserEmployee } from "../models";
 
 class UserRepository {
   private prisma: PrismaClient;
@@ -130,6 +130,21 @@ class UserRepository {
       return await this.prisma.users.findFirst({
         where: {
           identificationId,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async FindEmployeeByIdentification(
+    identificationId: string
+  ): Promise<Employee | null> {
+    try {
+      return await this.prisma.employees.findFirst({
+        where: {
+          identification: identificationId,
+          isActive: true
         },
       });
     } catch (error) {
