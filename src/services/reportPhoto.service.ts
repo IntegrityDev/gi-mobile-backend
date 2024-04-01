@@ -43,6 +43,14 @@ class ReportPhotoService {
         }
     }
 
+    async GetLastPhotByReportId(id: number) {
+        try {
+            return FormateData(await this.repository.GetLastPhotByReportId(id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async Delete(id: number, userId: number ) {
         try {
             const data = await this.repository.Delete(id, userId);

@@ -35,6 +35,14 @@ class ReportService {
         }
     }
 
+    async GetLastFive(userId: number) {
+        try {
+            return FormateData(await this.repository.GetLastFive());
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async GetById(id: number) {
         try {
             return FormateData(await this.repository.GetById(id));

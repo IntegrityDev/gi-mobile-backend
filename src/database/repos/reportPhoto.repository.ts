@@ -54,6 +54,21 @@ class ReportPhotoRepository {
         }
     }
 
+    async GetLastPhotByReportId(id: number): Promise<ReportPhoto | null> {
+        try {
+            return await this.prisma.reportPhotos.findFirst({
+                where: { 
+                    reportId: id
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async Delete(id: number, userId: number): Promise<ReportPhoto | null> {
         try {
             const deleted = await this.prisma.reportPhotos.delete({

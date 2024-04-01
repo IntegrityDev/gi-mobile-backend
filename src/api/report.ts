@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
 import AuthMiddleware from './middlewares/auth';
-import { CustomRequest } from '../database/models';
-import { ReportService } from '../services';
+import { CustomRequest, Report } from '../database/models';
+import { ReportPhotoService, ReportService } from '../services';
 
 
 export default function setupReportRoutes(app: any): void {
@@ -69,6 +69,16 @@ export default function setupReportRoutes(app: any): void {
             return res.status(STATUS_CODES.INTERNAL_ERROR).json({
                 message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
             });
+        }
+    });
+
+    app.get('/lasts-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            //const { id: userId } = req.user;
+            const { data } = await service.GetLastFive(1);
+            return res.json(data);
+        } catch (error) {
+            next(error);
         }
     });
 }

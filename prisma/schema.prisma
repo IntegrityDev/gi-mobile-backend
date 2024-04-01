@@ -165,23 +165,27 @@ model reportPhotos {
   createdBy  Int
   modifiedAt DateTime? @db.Date
   modifiedBy Int?
+  reports    reports   @relation(fields: [reportId], references: [id], onUpdate: Restrict, map: "fk_reportPhotos_reportId")
+
+  @@index([reportId], map: "fk_reportPhotos_reportId")
 }
 
 model reports {
-  id           Int        @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   visitId      Int
   laborAreaId  Int
-  news         String?    @db.VarChar(150)
-  report       String     @db.Text
+  news         String?        @db.VarChar(150)
+  report       String         @db.Text
   toEmployeeId Int?
   isDeleted    Boolean
   createdBy    Int
-  createdAt    DateTime   @default(now()) @db.Date
-  modifiedAt   DateTime?  @db.Date
+  createdAt    DateTime       @default(now()) @db.Date
+  modifiedAt   DateTime?      @db.Date
   modifiedBy   Int?
-  employees    employees? @relation(fields: [toEmployeeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_employee")
-  laborAreas   laborAreas @relation(fields: [laborAreaId], references: [id], onUpdate: Restrict, map: "fk_reports_labor_area")
-  visits       visits     @relation(fields: [visitId], references: [id], onUpdate: Restrict, map: "fk_reports_visit")
+  reportPhotos reportPhotos[]
+  employees    employees?     @relation(fields: [toEmployeeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_employee")
+  laborAreas   laborAreas     @relation(fields: [laborAreaId], references: [id], onUpdate: Restrict, map: "fk_reports_labor_area")
+  visits       visits         @relation(fields: [visitId], references: [id], onUpdate: Restrict, map: "fk_reports_visit")
 
   @@index([toEmployeeId], map: "fk_reports_employee")
   @@index([visitId], map: "fk_reports_visits")

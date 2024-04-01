@@ -50,6 +50,23 @@ class ReportRepository {
         }
     }
 
+    async GetLastFive(): Promise<Report[]> {
+        try {
+            return await this.prisma.reports.findMany({
+                include: {
+                    laborAreas: true, 
+                    reportPhotos: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 5
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async GetById(id: number): Promise<Report | null> {
         try {
             return await this.prisma.reports.findFirst({
