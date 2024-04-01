@@ -82,6 +82,11 @@ export default function setupReportPhotoRoutes(app: any): void {
         const uploadPromises: any[] = [];
         const tempFilesCreated: string[] = [];
         const options = { folder: "reports"}
+        const folderPath = __dirname + "/upload";
+        if (!fs.existsSync(folderPath)) {
+          fs.mkdirSync(folderPath);
+          console.log('Carpeta creada:', folderPath);
+        }
 
         for (const image of req.files as any[]) {
           const isJPEG = image.mimetype === "image/jpeg";
@@ -119,7 +124,7 @@ export default function setupReportPhotoRoutes(app: any): void {
         }
         const uploadedImages = await Promise.all(uploadPromises);
         console.log("Imágenes subidas a Cloudinary");
-        console.log(uploadedImages)
+
         const reportPhotos = [];
         const { id: userId } = req.user as { id: number };
         for (const uploadedImage of uploadedImages) {
