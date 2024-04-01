@@ -5,6 +5,9 @@ import { CustomRequest } from "../database/models";
 import { ReportPhotoService } from "../services";
 import multer from "multer";
 import cloudinary from "cloudinary";
+import sharp from "sharp";
+import { v4 as uuidv4 } from "uuid";
+const fs = require('fs');
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -35,8 +38,6 @@ export default function setupReportPhotoRoutes(app: any): void {
       }
     }
   );
-
-
 
   app.get(
     "/reports-photos/:reportId",
@@ -78,15 +79,41 @@ export default function setupReportPhotoRoutes(app: any): void {
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       try {
         const reportId = req.body.reportId;
-        const uploadPromises = [];
+        const uploadPromises: any[] = [];
+        const tempFilesCreated: string[] = [];
 
         for (const image of req.files as any[]) {
-          const uploadPromise = cloudinary.v2.uploader.upload(image.path);
-          uploadPromises.push(uploadPromise);
+          const isJPEG = image.mimetype === "image/jpeg";
+          const isPNG = image.mimetype === "image/png";
+
+          let uploadPromise;
+          const fileName = __dirname + "/upload/" + uuidv4();
+          if (isJPEG) {
+            await sharp(image.path)
+              .jpeg({ quality: 60, progressive: true })
+              .withMetadata()
+              .toFile(fileName)
+              .then(() => {
+                uploadPromise = cloudinary.v2.uploader.upload(fileName);
+                uploadPromises.push(uploadPromise);
+                tempFilesCreated.push(fileName);
+              })
+              .catch(() => {});
+          } else if (isPNG) {
+            await sharp(image.path)
+              .png({ compressionLevel: 5 })
+              .withMetadata()
+              .toFile(fileName)
+              .then(() => {
+                uploadPromise = cloudinary.v2.uploader.upload(fileName);
+                uploadPromises.push(uploadPromise);
+                tempFilesCreated.push(fileName);
+              })
+              .catch(() => {});
+          }
         }
         const uploadedImages = await Promise.all(uploadPromises);
         console.log("Imágenes subidas a Cloudinary");
-
         const reportPhotos = [];
         const { id: userId } = req.user as { id: number };
         for (const uploadedImage of uploadedImages) {
@@ -104,11 +131,13 @@ export default function setupReportPhotoRoutes(app: any): void {
         }
 
         const { data } = await service.Create(reportPhotos);
-        return res.status(data?.statusCode || STATUS_CODES.OK).json({
-            created: true,
-            data
+        tempFilesCreated.forEach(file => {
+          fs.unlinkSync(file);
         });
-       
+        return res.status(data?.statusCode || STATUS_CODES.OK).json({
+          created: true,
+          data,
+        });
       } catch (error) {
         console.log(error);
         return res.status(STATUS_CODES.INTERNAL_ERROR).json({
