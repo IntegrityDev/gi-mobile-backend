@@ -72,6 +72,9 @@ class ReportRepository {
             return await this.prisma.reports.findFirst({
                 where: { 
                     id
+                },
+                include: {
+                    laborAreas: true
                 }
             });
         } catch (error) {
