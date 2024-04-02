@@ -38,7 +38,7 @@ class AuthService {
           return FormateData({
             signed: false,
             message: RESPONSE_MESSAGES.USER_NOT_VERIFIED,
-            statusCode: STATUS_CODES.BAD_REQUEST,
+            statusCode: STATUS_CODES.OK,
           });
         }
         const isValidPassword: boolean = ComparePassword(
@@ -66,7 +66,7 @@ class AuthService {
       return FormateData({
         signed: false,
         message: RESPONSE_MESSAGES.WRONG_LOGIN,
-        statusCode: STATUS_CODES.BAD_REQUEST,
+        statusCode: STATUS_CODES.OK,
         token: null,
         id: null,
       });
