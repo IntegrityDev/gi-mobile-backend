@@ -1,6 +1,5 @@
 import sgMail from '@sendgrid/mail';
-import { SENDGRID_KEY } from '../config';
-sgMail.setApiKey("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");
+
 
 export async function sendEmail(
   destinatario: string,
@@ -8,6 +7,7 @@ export async function sendEmail(
   contenidoHTML: string
 ): Promise<any> {
   try {
+    sgMail.setApiKey(process.env.SENDGRID_KEY || "");
     const msg = {
       to: destinatario, // Change to your recipient
       from: "dev.gestionintegral@gmail.com", // Change to your verified sender
