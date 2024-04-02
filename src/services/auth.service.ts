@@ -8,13 +8,15 @@ import {
 } from "../utils";
 import { RESPONSE_MESSAGES, STATUS_CODES } from "../constants";
 import { UserProfileRepository, UserRepository } from "../database/repos";
-import { CreateUser, User } from "../database/models";
+import { Client, CreateUser, Employee, User } from "../database/models";
+import EmailService from "./email.service";
 
 interface UserInputs {
   identificationId: string;
   password: string;
   newPassword?: string;
   id?: number;
+  email?: string;
 }
 
 class AuthService {
@@ -38,38 +40,52 @@ class AuthService {
           password,
           existingUser.password
         );
-        if (isValidPassword) {
-            if (!existingUser.isVerified) {
-              return FormateData({
-                signed: false,
-                message: RESPONSE_MESSAGES.USER_NOT_VERIFIED,
-                statusCode: STATUS_CODES.OK,
-              });
-            }
-          const { identificationId: identification, id } = existingUser;
-          const token: string = await GenerateSignature({ identification, id });
-          //Get user profiles
-          const userProfiles = await this.userProfileRepo.GetAllByUserId(
-            existingUser.id
-          );
-          // console.log("Profiles User", userProfiles)
 
+        if (isValidPassword) {
+          if (!existingUser.isVerified) {
+            return FormateData({
+              signed: false,
+              message: RESPONSE_MESSAGES.USER_NOT_VERIFIED,
+              statusCode: STATUS_CODES.OK,
+            });
+          } else {
+            const { identificationId: identification, id } = existingUser;
+            const token: string = await GenerateSignature({
+              identification,
+              id,
+            });
+            //Get user profiles
+            const userProfiles = await this.userProfileRepo.GetAllByUserId(
+              existingUser.id
+            );
+            // console.log("Profiles User", userProfiles)
+
+            return FormateData({
+              signed: true,
+              id: existingUser.id,
+              token,
+              message: null,
+              statusCode: STATUS_CODES.OK,
+            });
+          }
+        } else {
           return FormateData({
-            signed: true,
-            id: existingUser.id,
-            token,
-            message: null,
+            signed: false,
+            message: RESPONSE_MESSAGES.WRONG_LOGIN,
             statusCode: STATUS_CODES.OK,
+            token: null,
+            id: null,
           });
         }
+      } else {
+        return FormateData({
+          signed: false,
+          message: RESPONSE_MESSAGES.WRONG_LOGIN,
+          statusCode: STATUS_CODES.OK,
+          token: null,
+          id: null,
+        });
       }
-      return FormateData({
-        signed: false,
-        message: RESPONSE_MESSAGES.WRONG_LOGIN,
-        statusCode: STATUS_CODES.OK,
-        token: null,
-        id: null,
-      });
     } catch (error) {
       throw error;
     }
@@ -150,7 +166,7 @@ class AuthService {
           return FormateData({
             changed: true,
             message: RESPONSE_MESSAGES.PASSWORD_CHANGED,
-            statusCode: STATUS_CODES.OK
+            statusCode: STATUS_CODES.OK,
           });
         }
       }
@@ -158,8 +174,49 @@ class AuthService {
       return FormateData({
         changed: false,
         message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
-        statusCode: STATUS_CODES.BAD_REQUEST
+        statusCode: STATUS_CODES.BAD_REQUEST,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async ResetPassword(userInputs: UserInputs): Promise<any> {
+    const { email } = userInputs;
+    try {
+      const existingEmployee: Employee | null =
+        await this.repository.FindEmployeeByEmail(email!);
+        let isValidUser = false;
+      if (existingEmployee) {
+        isValidUser = true;
         
+      } else {
+        const existingClient: Client | null =
+        await this.repository.FindClientByEmail(email!);
+        if (existingClient) {
+          isValidUser = true;
+        }
+      }
+
+      if (isValidUser) {
+       const emailService = new EmailService();
+     const email = await emailService.SendEmail({
+       name: "Oscar Melgarejo",
+       phone: "3222",
+       email: "oscar.melgarejob@gmail.com",
+       message: "Esto es una prueba",
+     });
+     console.log(email);
+        return FormateData({
+            changed: true,
+            message: RESPONSE_MESSAGES.PASSWORD_CHANGED,
+            statusCode: STATUS_CODES.OK,
+          });
+      }
+      return FormateData({
+        changed: false,
+        message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
+        statusCode: STATUS_CODES.BAD_REQUEST,
       });
     } catch (error) {
       throw error;

@@ -26,6 +26,18 @@ export default function setupAuthRoutes(app: any): void {
             });
         }
     });
+
+    app.post('/auth/reset-password', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            
+            const { data } = await service.ResetPassword(req.body);
+            return res.status(data?.statusCode).json(data);
+        } catch (error) {
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
     
     app.post('/auth/change-password', async (req: Request, res: Response, next: NextFunction) => {
         try {
