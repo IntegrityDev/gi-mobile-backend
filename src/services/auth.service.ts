@@ -34,18 +34,18 @@ class AuthService {
         await this.repository.FindUserByIdentification(identificationId);
 
       if (existingUser) {
-        if (!existingUser.isVerified) {
-          return FormateData({
-            signed: false,
-            message: RESPONSE_MESSAGES.USER_NOT_VERIFIED,
-            statusCode: STATUS_CODES.OK,
-          });
-        }
         const isValidPassword: boolean = ComparePassword(
           password,
           existingUser.password
         );
         if (isValidPassword) {
+            if (!existingUser.isVerified) {
+              return FormateData({
+                signed: false,
+                message: RESPONSE_MESSAGES.USER_NOT_VERIFIED,
+                statusCode: STATUS_CODES.OK,
+              });
+            }
           const { identificationId: identification, id } = existingUser;
           const token: string = await GenerateSignature({ identification, id });
           //Get user profiles
