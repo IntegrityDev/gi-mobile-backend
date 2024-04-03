@@ -6,7 +6,7 @@ import {
   GeneratePassword,
   ComparePassword,
 } from "../utils";
-import { RESPONSE_MESSAGES, STATUS_CODES } from "../constants";
+import { EMAIL_TEMPLATES, RESPONSE_MESSAGES, STATUS_CODES } from "../constants";
 import { UserProfileRepository, UserRepository } from "../database/repos";
 import { Client, CreateUser, Employee, User } from "../database/models";
 import EmailService from "./email.service";
@@ -17,6 +17,7 @@ interface UserInputs {
   newPassword?: string;
   id?: number;
   email?: string;
+  name?: string;
 }
 
 class AuthService {
@@ -181,37 +182,52 @@ class AuthService {
     }
   }
 
+   generateCode() {
+    const codigo = Math.floor(100000 + Math.random() * 900000);
+    return codigo.toString();
+}
+
   public async ResetPassword(userInputs: UserInputs): Promise<any> {
-    const { email } = userInputs;
+    const { email, name } = userInputs;
     try {
       const existingEmployee: Employee | null =
         await this.repository.FindEmployeeByEmail(email!);
-        let isValidUser = false;
+      let isValidUser = false;
       if (existingEmployee) {
         isValidUser = true;
-        
       } else {
         const existingClient: Client | null =
-        await this.repository.FindClientByEmail(email!);
+          await this.repository.FindClientByEmail(email!);
         if (existingClient) {
           isValidUser = true;
         }
       }
 
       if (isValidUser) {
-       const emailService = new EmailService();
-     const email = await emailService.SendEmail({
-       name: "Oscar Melgarejo",
-       phone: "3222",
-       email: "oscar.melgarejob@gmail.com",
-       message: "Esto es una prueba",
-     });
-     console.log(email);
-        return FormateData({
-            changed: true,
-            message: RESPONSE_MESSAGES.PASSWORD_CHANGED,
+        const emailService = new EmailService();
+
+        const resetCode: string = this.generateCode();
+        const senderEmail = await emailService.SendEmail({
+          title: EMAIL_TEMPLATES.RECOVERY_PASSWORD,
+          name: name!,
+          subject: `${resetCode} es el código de recuperación de contraseña`,
+          email: email!,
+          message: `<strong style="font-size: 26px; letter-spacing: 4px;">${resetCode}</strong> es el código de recuperación de tu cuenta de GIAPP`,
+        });
+        
+        if (senderEmail) {
+          return FormateData({
+            emailSent: true,
+            message: RESPONSE_MESSAGES.EMAIL_RESET_SENT,
             statusCode: STATUS_CODES.OK,
           });
+        } else {
+          return FormateData({
+            emailSent: false,
+            message: RESPONSE_MESSAGES.EMAIL_RESET_FAILED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
       }
       return FormateData({
         changed: false,

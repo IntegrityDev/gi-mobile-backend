@@ -14,7 +14,9 @@ const RESPONSE_MESSAGES = {
     EMPLOYEE_ALREADY_ASSIGNED: 'El colaborador con identificación {identification}, ya se encuentra asignado a este cliente',
     EMPLOYEES_ASSIGNED: 'Empleados asignados exitosamente',
     EMPLOYEES_NOT_ASSIGNED: 'Los empleados no fueron asignados, por favor revise los mensajes de la aplicación',
-    EMPLOYEES_ASSIGNED_WITH_ERRORS: 'Empleados asignados exitosamente, algunos no fueron asignado por favor revisalos'
+    EMPLOYEES_ASSIGNED_WITH_ERRORS: 'Empleados asignados exitosamente, algunos no fueron asignado por favor revisalos',
+    EMAIL_RESET_SENT: 'Se ha enviado un correo electrónico con el código de recuperación de la contraseña. Este código es válido durante 1 día.',
+    EMAIL_RESET_FAILED: 'No se pudo enviar el correo electrónico de recuperación de contraseña, por favor inténtelo de nuevo más tarde.'
 }
 
 export default RESPONSE_MESSAGES
