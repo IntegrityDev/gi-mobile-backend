@@ -179,7 +179,7 @@ model reports {
   toEmployeeId Int?
   isDeleted    Boolean
   createdBy    Int
-  createdAt    DateTime       @default(now()) @db.Date
+  createdAt    DateTime       @default(now()) @db.Timestamp(0)
   modifiedAt   DateTime?      @db.Date
   modifiedBy   Int?
   reportPhotos reportPhotos[]
@@ -238,4 +238,13 @@ model laborAreas {
   name     String    @db.VarChar(150)
   isActive Boolean
   reports  reports[]
+}
+
+model recoveryCodes {
+  id             Int      @id @default(autoincrement())
+  identification String   @db.VarChar(80)
+  email          String   @db.VarChar(200)
+  code           String   @db.VarChar(10)
+  createdAt      DateTime @default(now()) @db.Timestamp(0)
+  isVerified     Boolean
 }

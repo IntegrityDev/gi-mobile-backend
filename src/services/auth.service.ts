@@ -182,24 +182,29 @@ class AuthService {
     }
   }
 
-   generateCode() {
+  generateCode() {
     const codigo = Math.floor(100000 + Math.random() * 900000);
     return codigo.toString();
-}
+  }
 
   public async ResetPassword(userInputs: UserInputs): Promise<any> {
-    const { email, name } = userInputs;
+    const { email } = userInputs;
+    let name, identification;
     try {
       const existingEmployee: Employee | null =
         await this.repository.FindEmployeeByEmail(email!);
       let isValidUser = false;
       if (existingEmployee) {
+        name = `${existingEmployee.firstName} ${existingEmployee.lastName}`;
+        identification = existingEmployee.identification;
         isValidUser = true;
       } else {
         const existingClient: Client | null =
           await this.repository.FindClientByEmail(email!);
         if (existingClient) {
           isValidUser = true;
+          name = existingClient.name;
+          identification = existingClient.identification;
         }
       }
 
@@ -214,8 +219,27 @@ class AuthService {
           email: email!,
           message: `<strong style="font-size: 26px; letter-spacing: 4px;">${resetCode}</strong> es el código de recuperación de tu cuenta de GIAPP`,
         });
-        
+
         if (senderEmail) {
+          const recoveryCode =
+            await this.repository.GetRecoveryCodeByIdentification(
+              identification as string
+            );
+
+          if (recoveryCode === null) {
+            await this.repository.SaveRecoveryCode({
+              identification: identification!,
+              email: email!,
+              code: resetCode,
+              isVerified: false,
+            });
+          } else {
+            await this.repository.UpdateRecoveryCode(
+              recoveryCode?.id,
+              resetCode
+            );
+          }
+
           return FormateData({
             emailSent: true,
             message: RESPONSE_MESSAGES.EMAIL_RESET_SENT,

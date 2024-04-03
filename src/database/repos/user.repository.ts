@@ -1,5 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { Client, CreateUser, Employee, ListUser, User, UserEmployee } from "../models";
+import {
+  Client,
+  CreateUser,
+  Employee,
+  ListUser,
+  User,
+  UserEmployee,
+} from "../models";
 
 class UserRepository {
   private prisma: PrismaClient;
@@ -102,22 +109,22 @@ class UserRepository {
           isDeleted: false,
         },
         select: {
-            id: true,
-            identificationId: true,
-            isVerified: true,
-            createdAt: true,
-            modifiedAt: true,
-            modifiedBy: true,
-            createdBy: true,
-            isDeleted: true
-        }
+          id: true,
+          identificationId: true,
+          isVerified: true,
+          createdAt: true,
+          modifiedAt: true,
+          modifiedBy: true,
+          createdBy: true,
+          isDeleted: true,
+        },
       });
       const employee = await this.prisma.employees.findFirst({
         where: {
           identification: user?.identificationId,
         },
       });
-      return {...user, employee} as UserEmployee
+      return { ...user, employee } as UserEmployee;
     } catch (error) {
       throw error;
     }
@@ -144,7 +151,7 @@ class UserRepository {
       return await this.prisma.employees.findFirst({
         where: {
           identification: identificationId,
-          isActive: true
+          isActive: true,
         },
       });
     } catch (error) {
@@ -152,14 +159,12 @@ class UserRepository {
     }
   }
 
-  async FindEmployeeByEmail(
-    email: string
-  ): Promise<Employee | null> {
+  async FindEmployeeByEmail(email: string): Promise<Employee | null> {
     try {
       return await this.prisma.employees.findFirst({
         where: {
           email,
-          isActive: true
+          isActive: true,
         },
       });
     } catch (error) {
@@ -167,14 +172,12 @@ class UserRepository {
     }
   }
 
-  async FindClientByEmail(
-    email: string
-  ): Promise<Client | null> {
+  async FindClientByEmail(email: string): Promise<Client | null> {
     try {
       return await this.prisma.clients.findFirst({
         where: {
           email,
-          isActive: true
+          isActive: true,
         },
       });
     } catch (error) {
@@ -195,6 +198,64 @@ class UserRepository {
         },
       });
       return deleted;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async SaveRecoveryCode({
+    identification,
+    isVerified,
+    code,
+    email,
+  }: {
+    identification: string;
+    email: string;
+    code: string;
+    isVerified: boolean;
+  }): Promise<any> {
+    try {
+      const userEntry = await this.prisma.recoveryCodes.create({
+        data: { identification, isVerified, code, email },
+      });
+
+      return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async UpdateRecoveryCode(
+    id: number,
+    code: string
+  ): Promise<any | null> {
+    try {
+      const updated = await this.prisma.recoveryCodes.update({
+        where: {
+          id,
+        },
+        data: {
+          code,
+          isVerified: false,
+          createdAt: new Date()
+        },
+      });
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetRecoveryCodeByIdentification(
+    identification: string
+  ): Promise<any | null> {
+    try {
+      const recoveryCode = await this.prisma.recoveryCodes.findFirst({
+        where: {
+          identification,
+        },
+      });
+      return recoveryCode;
     } catch (error) {
       throw error;
     }
