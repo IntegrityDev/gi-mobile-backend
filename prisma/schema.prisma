@@ -9,14 +9,16 @@ datasource db {
 }
 
 model profiles {
-  id           Int      @id @default(autoincrement())
-  name         String   @db.VarChar(80)
-  description  String?  @db.VarChar(150)
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(80)
+  description  String?        @db.VarChar(150)
   isSupervisor Boolean
+  isClient     Boolean
   isAdmin      Boolean
   isSysAdmin   Boolean
-  createdAt    DateTime @default(now()) @db.Date
+  createdAt    DateTime       @default(now()) @db.Date
   createdBy    Int
+  userProfiles userProfiles[]
 }
 
 model users {
@@ -33,7 +35,7 @@ model users {
 }
 
 model clients {
-  id             Int       @id @default(autoincrement())
+  id             Int       @id @unique(map: "id") @default(autoincrement())
   identification String    @unique(map: "client_identification") @db.VarChar(80)
   name           String    @db.VarChar(200)
   email          String    @db.VarChar(150)
@@ -50,7 +52,7 @@ model clients {
 }
 
 model employees {
-  id             Int       @id @default(autoincrement())
+  id             Int       @id @unique(map: "id") @default(autoincrement())
   identification String    @unique(map: "employee_identification") @db.VarChar(80)
   firstName      String    @db.VarChar(150)
   lastName       String    @db.VarChar(150)
@@ -220,14 +222,17 @@ model userProfiles {
   createdBy  Int
   modifiedAt DateTime? @db.Timestamp(0)
   modifiedBy Int?
+  profiles   profiles  @relation(fields: [profileId], references: [id], onUpdate: Restrict, map: "fk_userProfile_profiles")
+
+  @@index([profileId], map: "fk_userProfile_profiles")
 }
 
 model clientEmployees {
   id         Int       @id @default(autoincrement())
   clientId   Int
-  employeeId Int
-  createdAt  DateTime  @default(now()) @db.Date
+  createdAt  DateTime? @default(now()) @db.Date
   createdBy  Int
+  employeeId Int
   isActive   Boolean
   modifiedAt DateTime? @db.Date
   modifiedBy Int?

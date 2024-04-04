@@ -49,7 +49,16 @@ export default function setupEmployeeRoutes(app: any): void {
         try {
             const { id } = req.params;
             const { id: userId } = req.user as { id: string };
-            const { data } = await service.Update(+id!, req.body, +userId);
+            const reqBody = { ...req.body }
+            const { assignClient, ...rest } = reqBody;
+            const { data } = await service.Update(+id!, rest, +userId);
+            if (assignClient) {
+                const { data: assignedClient } = await service.AssignClient(
+                  +id!,
+                  assignClient,
+                  +userId
+                );
+            }
             return res.json(data);
         } catch (error) {
             console.error(error);

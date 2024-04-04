@@ -74,8 +74,7 @@ export default function setupReportRoutes(app: any): void {
 
     app.get('/lasts-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            //const { id: userId } = req.user;
-            const { data } = await service.GetLastFive(1);
+            const { data } = await service.GetLastFive(req.user);
             return res.json(data);
         } catch (error) {
             next(error);

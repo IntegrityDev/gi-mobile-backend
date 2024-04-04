@@ -7,7 +7,7 @@ import {
   ComparePassword,
 } from "../utils";
 import { EMAIL_TEMPLATES, RESPONSE_MESSAGES, STATUS_CODES } from "../constants";
-import { UserProfileRepository, UserRepository } from "../database/repos";
+import { UserRepository } from "../database/repos";
 import { Client, CreateUser, Employee, User } from "../database/models";
 import EmailService from "./email.service";
 
@@ -22,11 +22,9 @@ interface UserInputs {
 
 class AuthService {
   private repository: UserRepository;
-  private userProfileRepo: UserProfileRepository;
 
   constructor() {
     this.repository = new UserRepository();
-    this.userProfileRepo = new UserProfileRepository();
   }
 
   public async SignIn(userInputs: UserInputs): Promise<any> {
@@ -50,22 +48,69 @@ class AuthService {
               statusCode: STATUS_CODES.OK,
             });
           } else {
-            const { identificationId: identification, id } = existingUser;
+            const {
+              identificationId: identification,
+              id,
+              name,
+              firstName,
+              lastName,
+            } = existingUser;
+
+            let isSupervisor = false,
+              isAdmin = false,
+              isClient = false,
+              isSuperAdmin = false,
+              isEmployee = false;
+            const userProfiles = await this.repository.GetAllProfilesByUserId(
+              existingUser.id
+            );
+
+            if (userProfiles && userProfiles.length > 0) {
+              userProfiles.forEach((profile) => {
+                if (profile.profiles?.isSupervisor) {
+                  isSupervisor = true;
+                }
+                if (profile.profiles?.isAdmin) {
+                  isAdmin = true;
+                }
+                if (profile.profiles?.isClient) {
+                  isClient = true;
+                }
+                if (profile.profiles?.isSysAdmin) {
+                  isSuperAdmin = true;
+                }
+              });
+            } else {
+              isEmployee = true
+            }
+
             const token: string = await GenerateSignature({
               identification,
               id,
+              name,
+              firstName,
+              lastName,
+              isSupervisor,
+              isSuperAdmin,
+              isAdmin,
+              isClient,
+              isEmployee,
             });
-            //Get user profiles
-            const userProfiles = await this.userProfileRepo.GetAllByUserId(
-              existingUser.id
-            );
-            // console.log("Profiles User", userProfiles)
 
             return FormateData({
               signed: true,
               id: existingUser.id,
+              identification,
               token,
               message: null,
+              name,
+              firstName,
+              lastName,
+              isSupervisor,
+              isSuperAdmin,
+              isAdmin,
+              isClient,
+              isEmployee,
               statusCode: STATUS_CODES.OK,
             });
           }
@@ -232,6 +277,7 @@ class AuthService {
               email: email!,
               code: resetCode,
               isVerified: false,
+              createdAt: new Date(),
             });
           } else {
             await this.repository.UpdateRecoveryCode(
@@ -257,6 +303,139 @@ class AuthService {
         changed: false,
         message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
         statusCode: STATUS_CODES.BAD_REQUEST,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async VerifyCode(email: string, code: string): Promise<any> {
+    try {
+      const verifyCode = await this.repository.GetRecoveryCodeByEmailAndCode(
+        email?.trim(),
+        code?.trim()
+      );
+      if (verifyCode) {
+        const _now = Date.now();
+        const differenceTime = _now - verifyCode?.createdAt;
+        const differenceDays = differenceTime / (1000 * 60 * 60 * 24);
+
+        if (differenceDays < 1) {
+          const updateVerify = await this.repository.UpdateRecoveryCode(
+            verifyCode?.id,
+            code,
+            true
+          );
+          if (updateVerify) {
+            return FormateData({
+              verifyCode: true,
+              message: RESPONSE_MESSAGES.CODE_VERIFIED,
+              statusCode: STATUS_CODES.OK,
+              identification: verifyCode?.identification,
+            });
+          } else {
+            return FormateData({
+              verifyCode: true,
+              message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
+              statusCode: STATUS_CODES.OK,
+            });
+          }
+        } else {
+          return FormateData({
+            verifyCode: false,
+            expired: true,
+            message: RESPONSE_MESSAGES.CODE_VERIFIED_EXPIRED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
+      }
+      return FormateData({
+        verifyCode: false,
+        message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
+        statusCode: STATUS_CODES.OK,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async ChangePasswordAfterVerifiedCode(
+    identification: string,
+    email: string,
+    password: string,
+    code: string
+  ): Promise<any> {
+    if (!identification || !email || !password || !code) {
+      return FormateData({
+        changed: false,
+        message: RESPONSE_MESSAGES.SOME_PARAMETERS_MISSING,
+        statusCode: STATUS_CODES.OK,
+      });
+    }
+    try {
+      const verifyCode = await this.repository.GetVerifiedByEmailAndCode(
+        email?.trim(),
+        code?.trim()
+      );
+      if (verifyCode) {
+        const _now = Date.now();
+        const differenceTime = _now - verifyCode?.createdAt;
+        const differenceDays = differenceTime / (1000 * 60 * 60 * 24);
+        if (differenceDays < 1) {
+          const existingUser: User | null =
+            await this.repository.FindUserByIdentification(identification);
+
+          if (existingUser) {
+            const salt: string = await GenerateSalt();
+            const userPassword: string = await GeneratePassword(
+              password!,
+              salt
+            );
+            await this.repository.ChangePassword(
+              existingUser.id,
+              userPassword,
+              salt,
+              0
+            );
+            try {
+              const emailService = new EmailService();
+              await emailService.SendEmail({
+                title: EMAIL_TEMPLATES.PASSWORD_CHANGED,
+                name: existingUser.name!,
+                subject: EMAIL_TEMPLATES.PASSWORD_CHANGED,
+                email: email!,
+                message: `Hola <strong>${existingUser.name}</strong>, queremos informarte que recientemente se realizó un cambio en tu contraseña. Si no fuiste tú quien realizó esta operación, por favor comunícate con nuestro equipo de soporte para verificar la información.`,
+              });
+            } catch (error) {
+              console.log(
+                "Error sending notify about changed password: ",
+                error
+              );
+            }
+            return FormateData({
+              changed: true,
+              message: RESPONSE_MESSAGES.PASSWORD_CHANGED,
+              statusCode: STATUS_CODES.OK,
+            });
+          } else {
+            return FormateData({
+              changed: false,
+              message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
+              statusCode: STATUS_CODES.OK,
+            });
+          }
+        } else {
+          return FormateData({
+            changed: false,
+            message: RESPONSE_MESSAGES.CODE_VERIFIED_EXPIRED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
+      }
+      return FormateData({
+        changed: false,
+        message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
+        statusCode: STATUS_CODES.OK,
       });
     } catch (error) {
       throw error;

@@ -8,17 +8,16 @@ import { CustomRequest } from '../database/models';
 export default function setupVisitRoutes(app: any): void {
     const service = new VisitService();
     
-    app.get('/visits',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/visits', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            //const { id: userId } = req.user;
-            const { data } = await service.GetAll();
+            const { data } = await service.GetAll(req.user);
             return res.json(data);
         } catch (error) {
             next(error);
         }
     });
 
-    app.get('/visits/:id', async (req: Request, res: Response, next: NextFunction) => {
+    app.get('/visits/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;
             const { data } = await service.GetById(+id);
@@ -42,7 +41,7 @@ export default function setupVisitRoutes(app: any): void {
         }
     });
 
-    app.post('/visits', async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.post('/visits', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
 
             const newVisit = {

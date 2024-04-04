@@ -35,9 +35,27 @@ class ReportService {
         }
     }
 
-    async GetLastFive(userId: number) {
+    async GetLastFive(user: any) {
         try {
-            return FormateData(await this.repository.GetLastFive());
+            let lastReports: Report[] = []
+            const {
+              identification,
+              id: userId,
+              isSupervisor,
+              isSuperAdmin,
+              isAdmin,
+              isClient,
+              isEmployee,
+            } = user;
+
+            if (isSuperAdmin || isSupervisor || isAdmin) {
+                lastReports = await this.repository.GetLastFive()
+            } else if (isClient) {
+                lastReports = await this.repository.GetLastFiveForClient(identification);
+            } else if (isEmployee) {
+                lastReports = await this.repository.GetLastFiveForEmployee(identification);
+            }
+            return FormateData(lastReports);
         } catch (error) {
             throw error;
         }

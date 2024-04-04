@@ -4,6 +4,7 @@ export interface Profile {
     description?: string | null;
     isSupervisor: boolean;
     isAdmin: boolean;
+    isClient: boolean;
     isSysAdmin: boolean;
     createdAt: Date;
     createdBy: number;

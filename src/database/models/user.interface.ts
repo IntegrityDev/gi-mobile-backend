@@ -10,7 +10,10 @@ export interface User {
   modifiedAt?: Date | null;
   modifiedBy?: number | null;
   createdBy?: number | null;
-  isDeleted?: boolean | null   
+  isDeleted?: boolean | null;
+  name?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
 export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {}

@@ -27,11 +27,31 @@ class VisitService {
         }
     }
 
-    async GetAll() {
+    async GetAll(user: any) {
         try {
-            return FormateData(await this.repository.GetAll());
+            let letVisits: Visit[] = []
+            const {
+                identification,
+                id: userId,
+                isSupervisor,
+                isSuperAdmin,
+                isAdmin,
+                isClient,
+                isEmployee,
+              } = user;
+
+              if (isSuperAdmin || isSupervisor || isAdmin) {
+                letVisits = await this.repository.GetAll()
+            } else if (isClient) {
+                //letVisits = await this.repository.GetLastFiveForClient(identification);
+            } else if (isEmployee) {
+                letVisits = await this.repository.GetAllReportsForEmployees(
+                  identification
+                );
+            }
+            return FormateData(letVisits);
         } catch (error) {
-            throw error;
+          throw error;
         }
     }
 

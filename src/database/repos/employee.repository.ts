@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateEmployee, CustomError, Employee, UpdateEmployee } from "../models";
+import { Client, CreateEmployee, CustomError, Employee, UpdateEmployee } from "../models";
 import { RESPONSE_MESSAGES } from "../../constants";
 
 class EmployeeRepository {
@@ -94,11 +94,29 @@ class EmployeeRepository {
 
   async GetById(id: number): Promise<Employee | null> {
     try {
-      return await this.prisma.employees.findFirst({
+      let client: Client | null = null;
+      const employee = await this.prisma.employees.findFirst({
         where: {
           id,
         },
       });
+      if (employee) {
+        const clientEmployee = await this.prisma.clientEmployees.findFirst({
+          where: {
+            employeeId: employee.id
+          }
+        })
+
+        if (clientEmployee) {
+          client = await this.prisma.clients.findFirst({
+            where: {
+              id: clientEmployee.clientId!,
+            },
+          });
+        }
+      }
+      
+      return {...employee, client } as Employee;
     } catch (error) {
       throw error;
     }
@@ -112,7 +130,7 @@ class EmployeeRepository {
         },
       });
       return deleted;
-    } catch (error) {
+    } catch (error) { 
       throw error;
     }
   }

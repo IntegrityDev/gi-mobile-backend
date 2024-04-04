@@ -1,3 +1,5 @@
+import { Profile } from "./profiles.interface";
+
 export interface UserProfile {
     id: number;
     userId: number;
@@ -7,4 +9,5 @@ export interface UserProfile {
     createdBy: number;
     modifiedAt?: Date | null;
     modifiedBy?: number | null
+    profiles?: Profile | null;
 }

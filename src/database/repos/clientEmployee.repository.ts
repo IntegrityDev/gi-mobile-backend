@@ -16,7 +16,7 @@ class ClientEmployeeRepository {
 
   async Create(
     clientEmployee: CreateClientEmployee
-  ): Promise<ClientEmployee | CustomError> {
+  ): Promise<ClientEmployee | CustomError | any> {
     let customError: CustomError;
     try {
       const existingClientEmployee =
@@ -31,7 +31,7 @@ class ClientEmployeeRepository {
       if (existingClientEmployee) {
         const employee = await this.prisma.employees.findUnique({
             where: {
-                id: existingClientEmployee.employeeId
+                id: existingClientEmployee.employeeId!
             }
         })
         customError = {
@@ -52,7 +52,7 @@ class ClientEmployeeRepository {
 
   async GetClientByEmployeeId(
     employeeId: number
-  ): Promise<ClientEmployee | null> {
+  ): Promise<ClientEmployee | null | any> {
     try {
       const existsClientEmployee = await this.prisma.clientEmployees.findFirst({
         where: {
@@ -64,7 +64,7 @@ class ClientEmployeeRepository {
       if (existsClientEmployee) {
         const client = await this.prisma.clients.findUnique({
           where: {
-            id: existsClientEmployee.clientId,
+            id: existsClientEmployee.clientId!,
           },
         });
         const clientEmployee = { ...existsClientEmployee, client: client };
@@ -90,8 +90,11 @@ class ClientEmployeeRepository {
 
       if (existsClientEmployee) {
         const employeeIds = existsClientEmployee.map(
-          (clientEmployee) => clientEmployee.employeeId
+          (clientEmployee) => clientEmployee.employeeId!
         );
+
+
+
         const employees = await this.prisma.employees.findMany({
           where: {
             id: {
@@ -114,7 +117,7 @@ class ClientEmployeeRepository {
     clientId: number,
     employeeId: number,
     userId: number
-  ): Promise<ClientEmployee | null> {
+  ): Promise<ClientEmployee | null | any> {
     try {
       const existingClientEmployee =
         await this.prisma.clientEmployees.findFirst({

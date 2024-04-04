@@ -1,3 +1,5 @@
+import { Client } from "./client.interface";
+
 export interface Employee {
     id: number;
     identification: string;
@@ -13,6 +15,7 @@ export interface Employee {
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
     isActive: boolean;
+    client?: Client | null;
   }
   
   export interface CreateEmployee extends Omit<Employee, 'id' | 'createdAt'> {}

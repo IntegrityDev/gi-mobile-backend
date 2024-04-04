@@ -67,6 +67,90 @@ class ReportRepository {
         }
     }
 
+    async GetLastFiveForClient(identification: string): Promise<Report[]> {
+        try {
+            const client = await this.prisma.clients.findFirst({
+                where: {
+                    identification
+                }
+            })
+            
+            if (!client) {
+                return [];
+            }
+           const clientReports = await this.prisma.reports.findMany({
+             where: {
+               visits: {
+                 clientId: client.id,
+               },
+             },
+             include: {
+               laborAreas: true,
+               reportPhotos: true,
+               visits: true,
+             },
+             orderBy: {
+               createdAt: "desc",
+             },
+             take: 5,
+           });
+
+            return clientReports;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetLastFiveForEmployee(identification: string): Promise<Report[]> {
+        try {
+            const employee = await this.prisma.employees.findFirst({
+                where: { identification }
+            })
+
+            if (employee) {
+                const clientEmployee = await this.prisma.clientEmployees.findFirst({
+                  where: {
+                    employeeId: employee.id,
+                  },
+                });
+                
+                if (clientEmployee) {
+                    const client = await this.prisma.clients.findFirst({
+                        where: {
+                            id: clientEmployee.clientId
+                        }
+                    })
+
+                    if (!client) {
+                        return [];
+                    }
+                   const clientReports = await this.prisma.reports.findMany({
+                     where: {
+                       visits: {
+                         clientId: client.id,
+                       },
+                     },
+                     include: {
+                       laborAreas: true,
+                       reportPhotos: true,
+                       visits: true,
+                     },
+                     orderBy: {
+                       createdAt: "desc",
+                     },
+                     take: 5,
+                   });
+
+                   return clientReports;
+                }
+            }       
+
+            return [];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async GetById(id: number): Promise<Report | null> {
         try {
             return await this.prisma.reports.findFirst({
