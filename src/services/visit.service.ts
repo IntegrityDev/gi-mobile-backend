@@ -1,4 +1,4 @@
-import { CreateVisit, Visit } from "../database/models";
+import { CreateVisit, Report, Visit } from "../database/models";
 import { VisitRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -29,7 +29,7 @@ class VisitService {
 
     async GetAll(user: any) {
         try {
-            let letVisits: Visit[] = []
+            let letVisits: Visit[] | Report[] = []
             const {
                 identification,
                 id: userId,
@@ -43,11 +43,11 @@ class VisitService {
               if (isSuperAdmin || isSupervisor || isAdmin) {
                 letVisits = await this.repository.GetAll()
             } else if (isClient) {
-                //letVisits = await this.repository.GetLastFiveForClient(identification);
+                letVisits = await this.repository.GeAllReportsForClient(identification);
             } else if (isEmployee) {
-                letVisits = await this.repository.GetAllReportsForEmployees(
-                  identification
-                );
+                  letVisits = await this.repository.GetAllReportsForEmployees(
+                    identification
+                  );
             }
             return FormateData(letVisits);
         } catch (error) {

@@ -1,3 +1,5 @@
+import { Client } from "./client.interface";
+
 export interface Report {
     id: number;
     visitId: number;
@@ -10,6 +12,7 @@ export interface Report {
     modifiedBy?: number | null;
     isDeleted: boolean;
     createdBy: number;
+    client?: Client | null
   }
   
   export interface CreateReport extends Omit<Report, 'id' | 'createdAt'> {}

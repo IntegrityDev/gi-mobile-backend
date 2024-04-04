@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateVisit, Visit } from "../models";
+import { CreateVisit, Report, Visit } from "../models";
 
 class VisitRepository {
   private prisma: PrismaClient;
@@ -53,7 +53,7 @@ class VisitRepository {
     }
   }
 
-  async GetAllReportsForEmployees(identification: string): Promise<Visit[]> {
+  async GetAllReportsForEmployees(identification: string): Promise<any[]> {
     try {
       const employee = await this.prisma.employees.findFirst({
         where: {
@@ -82,17 +82,71 @@ class VisitRepository {
           return [];
         }
 
-        return await this.prisma.visits.findMany({
+        const reportClient = await this.prisma.reports.findMany({
           where: {
-            clientId: client.id,
+            visits: {
+              clientId: client.id,
+            },
           },
           include: {
-            employees: true,
-            clients: true,
+            laborAreas: true,
+            reportPhotos: true,
+            visits: {
+              include: {
+                clients: true,
+                employees: true
+              }
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         });
+
+         return reportClient
       }
-      return []
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GeAllReportsForClient(identification: string): Promise<Report[]> {
+    try {
+      const client = await this.prisma.clients.findFirst({
+        where: {
+          identification,
+        },
+      });
+
+      if (!client) {
+        return [];
+      }
+      let clientReports = await this.prisma.reports.findMany({
+        where: {
+          visits: {
+            clientId: client.id,
+          },
+        },
+        include: {
+          laborAreas: true,
+          reportPhotos: true,
+          visits: {
+            include: {
+              clients: true
+            }
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (clientReports) {
+        clientReports = { ...clientReports, ...client };
+      }
+
+      return clientReports;
     } catch (error) {
       throw error;
     }
