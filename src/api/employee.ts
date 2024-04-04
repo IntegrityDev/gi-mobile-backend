@@ -45,6 +45,17 @@ export default function setupEmployeeRoutes(app: any): void {
         }
     });
 
+    app.get('/employees-client/:clientId', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { clientId } = req.params;
+            const { data } = await service.GetByClientId(+clientId);
+            return res.json(data);
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
+
     app.put('/employees/:id', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;

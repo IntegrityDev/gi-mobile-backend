@@ -122,6 +122,34 @@ class EmployeeRepository {
     }
   }
 
+  async GetByClientId(clientId: number): Promise<Employee[] | null> {
+    try {
+      const clientEmployee = await this.prisma.clientEmployees.findMany({
+        where: {
+          clientId,
+        },
+        select: {
+          employeeId: true
+        }
+      });
+
+      if (clientEmployee) {
+        const _ids = clientEmployee.map((register) => register.employeeId)
+        return await this.prisma.employees.findMany({
+          where: {
+            id: {
+              in: _ids,
+            },
+          },
+        });
+      }
+
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Delete(id: number, userId: number): Promise<Employee | null> {
     try {
       const deleted = await this.prisma.employees.delete({

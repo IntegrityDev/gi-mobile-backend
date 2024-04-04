@@ -54,6 +54,7 @@ class AuthService {
               name,
               firstName,
               lastName,
+              imageUrl
             } = existingUser;
 
             let isSupervisor = false,
@@ -111,6 +112,7 @@ class AuthService {
               isAdmin,
               isClient,
               isEmployee,
+              imageUrl,
               statusCode: STATUS_CODES.OK,
             });
           }

@@ -50,6 +50,14 @@ class EmployeeService {
         }
     }
 
+    async GetByClientId(clientId: number) {
+        try {
+            return FormateData(await this.repository.GetByClientId(clientId));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async Delete(id: number, userId: number) {
         try {
             const data = await this.repository.Delete(id, userId);

@@ -14,6 +14,7 @@ export interface User {
   name?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  imageUrl?: string | null;
 }
 
 export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {}

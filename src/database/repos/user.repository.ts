@@ -151,7 +151,7 @@ class UserRepository {
     identificationId: string
   ): Promise<User | null> {
     try {
-      let name = "", firstName = "", lastName = "";
+      let name = "", firstName = "", lastName = "", imageUrl = null;
       const user = await this.prisma.users.findFirst({
         where: {
           identificationId,
@@ -164,13 +164,15 @@ class UserRepository {
           name = `${employee.firstName} ${employee.lastName}`;
           firstName = employee.firstName;
           lastName = employee.lastName;
+          imageUrl = employee.imageUrl;
         } else {
           const client = await this.FindClientByIdentification(user.identificationId);
           if (client) {
             name = client.name;
+            imageUrl = client.imageUrl
           }
         }
-        return {...user, name, firstName, lastName} as User
+        return {...user, name, firstName, lastName, imageUrl } as User
       }
       return user;
     } catch (error) {
