@@ -2,11 +2,11 @@ import { Client } from "./client.interface";
 
 export interface Report {
     id: number;
-    visitId: number;
     laborAreaId: number;
+    clientId: number;
     news?: string | null;
     report: string;
-    toEmployeeId?: number | null;
+    employeeId: number;
     createdAt: Date;
     modifiedAt?: Date | null;
     modifiedBy?: number | null;

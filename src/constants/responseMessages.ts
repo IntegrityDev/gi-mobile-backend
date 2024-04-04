@@ -16,7 +16,7 @@ const RESPONSE_MESSAGES = {
     EMPLOYEES_NOT_ASSIGNED: 'Los empleados no fueron asignados, por favor revise los mensajes de la aplicación',
     EMPLOYEES_ASSIGNED_WITH_ERRORS: 'Empleados asignados exitosamente, algunos no fueron asignado por favor revisalos',
     EMAIL_RESET_SENT: 'Se ha enviado un correo electrónico con el código de recuperación de la contraseña. Este código es válido durante 1 día.',
-    EMAIL_RESET_FAILED: 'No se pudo enviar el correo electrónico de recuperación de contraseña, por favor inténtelo de nuevo más tarde.',
+    EMAIL_RESET_FAILED: 'No se pudo enviar el correo electrónico de recuperación de contraseña, por favor verificalo e inténtelo nuevamente.',
     CODE_VERIFIED: 'La verificación del código fue realizada con éxito',
     CODE_VERIFIED_FAILED: 'El código no pudo ser verificado, por favor intente nuevamente',
     CODE_VERIFIED_EXPIRED: 'El código que intentas usar ha expirado, por favor genera uno nuevo',

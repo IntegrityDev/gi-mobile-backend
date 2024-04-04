@@ -241,6 +241,7 @@ class AuthService {
       const existingEmployee: Employee | null =
         await this.repository.FindEmployeeByEmail(email!);
       let isValidUser = false;
+
       if (existingEmployee) {
         name = `${existingEmployee.firstName} ${existingEmployee.lastName}`;
         identification = existingEmployee.identification;
@@ -303,8 +304,8 @@ class AuthService {
       }
       return FormateData({
         changed: false,
-        message: RESPONSE_MESSAGES.PASSWORD_NOT_CHANGE,
-        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: RESPONSE_MESSAGES.EMAIL_RESET_FAILED,
+        statusCode: STATUS_CODES.OK,
       });
     } catch (error) {
       throw error;

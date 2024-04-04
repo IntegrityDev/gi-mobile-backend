@@ -48,7 +48,7 @@ model clients {
   createdBy      Int
   modifiedAt     DateTime? @db.Date
   modifiedBy     Int?
-  visits         visits[]
+  reports        reports[]
 }
 
 model employees {
@@ -67,7 +67,6 @@ model employees {
   modifiedAt     DateTime? @db.Date
   modifiedBy     Int?
   reports        reports[]
-  visits         visits[]
 }
 
 model company {
@@ -174,43 +173,24 @@ model reportPhotos {
 
 model reports {
   id           Int            @id @default(autoincrement())
-  visitId      Int
+  clientId     Int
   laborAreaId  Int
   news         String?        @db.VarChar(150)
   report       String         @db.Text
-  toEmployeeId Int?
+  employeeId   Int
   isDeleted    Boolean
   createdBy    Int
   createdAt    DateTime       @default(now()) @db.Timestamp(0)
   modifiedAt   DateTime?      @db.Date
   modifiedBy   Int?
   reportPhotos reportPhotos[]
-  employees    employees?     @relation(fields: [toEmployeeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_employee")
+  clients      clients        @relation(fields: [clientId], references: [id], onUpdate: Restrict, map: "fk_reports_client")
+  employees    employees      @relation(fields: [employeeId], references: [id], onUpdate: Restrict, map: "fk_reports_employees")
   laborAreas   laborAreas     @relation(fields: [laborAreaId], references: [id], onUpdate: Restrict, map: "fk_reports_labor_area")
-  visits       visits         @relation(fields: [visitId], references: [id], onUpdate: Restrict, map: "fk_reports_visit")
 
-  @@index([toEmployeeId], map: "fk_reports_employee")
-  @@index([visitId], map: "fk_reports_visits")
   @@index([laborAreaId], map: "fk_reports_labor_area")
-}
-
-model visits {
-  id         Int       @id @default(autoincrement())
-  dateVisit  DateTime  @db.Date
-  timeVisit  DateTime  @db.Time(0)
-  employeeId Int
-  clientId   Int
-  details    String?   @db.Text
-  createdAt  DateTime  @default(now()) @db.Date
-  modifiedAt DateTime? @db.Date
-  modifiedBy Int?
-  isDeleted  Boolean
-  reports    reports[]
-  clients    clients   @relation(fields: [clientId], references: [id], onUpdate: Restrict, map: "fk_visits_client")
-  employees  employees @relation(fields: [employeeId], references: [id], onUpdate: Restrict, map: "fk_visits_employee")
-
-  @@index([clientId], map: "fk_visits_client")
-  @@index([employeeId], map: "fk_visits_employee")
+  @@index([clientId], map: "fk_reports_client")
+  @@index([employeeId], map: "fk_reports_employees")
 }
 
 model userProfiles {

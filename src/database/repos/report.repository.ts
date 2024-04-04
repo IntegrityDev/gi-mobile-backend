@@ -11,11 +11,11 @@ class ReportRepository {
     async Create(report: CreateReport): Promise<Report | null> {
         try {
             const userEntry = await this.prisma.reports.create({
-                data: report,
-                include: {
-                    visits: true,
-                    employees: true
-                }
+              data: report,
+              include: {
+                clients: true,
+                employees: true
+              },
             });
             return userEntry;
             
@@ -42,7 +42,10 @@ class ReportRepository {
         try {
             return await this.prisma.reports.findMany({
                 include: {
-                    laborAreas: true
+                    laborAreas: true,
+                    clients: true,
+                    employees: true,
+                    reportPhotos: true
                 }
             });
         } catch (error) {
@@ -54,7 +57,7 @@ class ReportRepository {
         try {
             return await this.prisma.reports.findMany({
                 include: {
-                    laborAreas: true, 
+                    laborAreas: true,  
                     reportPhotos: true
                 },
                 orderBy: {
@@ -80,14 +83,12 @@ class ReportRepository {
             }
            const clientReports = await this.prisma.reports.findMany({
              where: {
-               visits: {
-                 clientId: client.id,
-               },
+               
              },
              include: {
                laborAreas: true,
                reportPhotos: true,
-               visits: true,
+               clients: true,
              },
              orderBy: {
                createdAt: "desc",
@@ -126,14 +127,12 @@ class ReportRepository {
                     }
                    const clientReports = await this.prisma.reports.findMany({
                      where: {
-                       visits: {
                          clientId: client.id,
-                       },
                      },
                      include: {
                        laborAreas: true,
                        reportPhotos: true,
-                       visits: true,
+                       clients: true,
                      },
                      orderBy: {
                        createdAt: "desc",
@@ -159,22 +158,6 @@ class ReportRepository {
                 },
                 include: {
                     laborAreas: true
-                }
-            });
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async GetByVisitId(visitId: number): Promise<Report[] | null> {
-        try {
-            return await this.prisma.reports.findMany({
-                where: { 
-                    visitId
-                },
-                include: {
-                    laborAreas: true,
-                    reportPhotos: true
                 }
             });
         } catch (error) {
