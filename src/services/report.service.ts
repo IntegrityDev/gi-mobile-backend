@@ -1,4 +1,4 @@
-import { CreateReport, Report } from "../database/models";
+import { CreateReport, CreateReportComment, Report } from "../database/models";
 import { ReportRepository } from "../database/repos";
 import { FormateData } from "../utils";
 
@@ -73,6 +73,23 @@ class ReportService {
         try {
             const data = await this.repository.Delete(id, userId);
             return FormateData(data);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async CreateReportComment(entry: CreateReportComment) {     
+        try {
+            const entityCreated = await this.repository.CreateReportComment(entry);
+            return FormateData(entityCreated);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetCommentsByReportId(id: number) {
+        try {
+            return FormateData(await this.repository.GetCommentsByReportId(id));
         } catch (error) {
             throw error;
         }

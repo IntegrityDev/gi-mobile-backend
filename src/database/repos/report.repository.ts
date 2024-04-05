@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { CreateReport, Report } from '../models';
+import { CreateReport, CreateReportComment, Report, ReportComment } from '../models';
 
 class ReportRepository {
     private prisma: PrismaClient;
@@ -159,6 +159,36 @@ class ReportRepository {
                 include: {
                     laborAreas: true
                 }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async CreateReportComment(report: CreateReportComment): Promise<ReportComment | null> {
+        try {
+            const userEntry = await this.prisma.reportComments.create({
+              data: report,
+              include: {
+                employees: true
+              }
+            });
+            return userEntry;
+            
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetCommentsByReportId(id: number): Promise<ReportComment[] | null> {
+        try {
+            return await this.prisma.reportComments.findMany({
+              where: {
+                reportId: id,
+              },
+              include: {
+                employees: true,
+              },
             });
         } catch (error) {
             throw error;

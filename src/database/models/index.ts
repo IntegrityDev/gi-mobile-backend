@@ -10,7 +10,7 @@ import { EmployeeRequestComment } from "./employeeRequestComment";
 import { EmployeeRequest } from "./employeeRequest.interface";
 import { Employee, CreateEmployee, UpdateEmployee } from "./employee.interface";
 import { ReportCommentPhoto } from "./reportCommentPhoto.interface";
-import { ReportComment } from "./reportComment.interface";
+import { ReportComment, CreateReportComment } from "./reportComment.interface";
 import { ReportPhoto, CreateReportPhoto, UpdateReportPhoto } from "./reportPhoto.interface";
 import { Report, CreateReport, UpdateReport } from "./report.interface";
 import { Visit, CreateVisit, UpdateVisit } from "./visit.interface";
@@ -45,6 +45,7 @@ export {
     UpdateReport,
     ReportCommentPhoto,
     ReportComment,
+    CreateReportComment,
     ReportPhoto,
     CreateReportPhoto,
     UpdateReportPhoto,

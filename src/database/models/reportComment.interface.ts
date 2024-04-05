@@ -1,3 +1,5 @@
+import { Employee } from "./employee.interface";
+
 export interface ReportComment {
     id: number;
     comments: string;
@@ -7,5 +9,9 @@ export interface ReportComment {
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
     reportId: number;
+    employeeId: string;
   }
   
+  export interface CreateReportComment extends Omit<ReportComment, 'id' | 'createdAt'> {}
+
+  // export interface UpdateReport extends Omit<Report, 'id' | 'identification' | 'createdAt' | 'createdBy'> {}

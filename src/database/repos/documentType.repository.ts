@@ -66,6 +66,30 @@ class DocumentTypeRepository {
             throw error;
         }
     }
+
+    async GetEmployeeRequestTypes(): Promise<any | null> {
+        try {
+            return await this.prisma.employeeRequestTypes.findMany({
+                where: {
+                    isActive: true
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetClientRequestTypes(): Promise<any | null> {
+        try {
+            return await this.prisma.clientRequestTypes.findMany({
+                where: {
+                    isActive: true
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default DocumentTypeRepository;

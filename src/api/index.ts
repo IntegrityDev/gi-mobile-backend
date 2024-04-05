@@ -7,6 +7,7 @@ import setupVisitRoutes from "./visit";
 import setupLaborAreaRoutes from "./laborArea";
 import setupReportRoutes from "./report";
 import setupReportPhotoRoutes from "./reportPhoto";
+import setupRequestsRoutes from "./request";
 
 export {
     setupAuthRoutes,
@@ -17,5 +18,6 @@ export {
     setupVisitRoutes,
     setupLaborAreaRoutes,
     setupReportRoutes,
-    setupReportPhotoRoutes
+    setupReportPhotoRoutes,
+    setupRequestsRoutes
 }

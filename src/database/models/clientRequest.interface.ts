@@ -1,9 +1,10 @@
 export interface ClientRequest {
     id: number;
-    clientId: number;
+    identification: string;
+    isClosed: boolean;
+    requestTypeId: number;
     request: string;
     isDeleted: boolean;
-    isRead: boolean;
     createdAt: Date;
     createdBy: number;
     modifiedAt?: Date | null;

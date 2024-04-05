@@ -35,38 +35,41 @@ model users {
 }
 
 model clients {
-  id             Int       @id @unique(map: "id") @default(autoincrement())
-  identification String    @unique(map: "client_identification") @db.VarChar(80)
-  name           String    @db.VarChar(200)
-  email          String    @db.VarChar(150)
-  address        String    @db.VarChar(150)
-  phone          String    @db.VarChar(80)
-  cellphone      String    @db.VarChar(80)
-  imageUrl       String?   @db.VarChar(500)
-  isActive       Boolean
-  createdAt      DateTime  @default(now()) @db.Date
-  createdBy      Int
-  modifiedAt     DateTime? @db.Date
-  modifiedBy     Int?
-  reports        reports[]
+  id              Int               @id @unique(map: "id") @default(autoincrement())
+  identification  String            @unique(map: "client_identification") @db.VarChar(80)
+  name            String            @db.VarChar(200)
+  email           String            @db.VarChar(150)
+  address         String            @db.VarChar(150)
+  phone           String            @db.VarChar(80)
+  cellphone       String            @db.VarChar(80)
+  imageUrl        String?           @db.VarChar(500)
+  isActive        Boolean
+  createdAt       DateTime          @default(now()) @db.Date
+  createdBy       Int
+  modifiedAt      DateTime?         @db.Date
+  modifiedBy      Int?
+  clientsRequests clientsRequests[]
+  reports         reports[]
 }
 
 model employees {
-  id             Int       @id @unique(map: "id") @default(autoincrement())
-  identification String    @unique(map: "employee_identification") @db.VarChar(80)
-  firstName      String    @db.VarChar(150)
-  lastName       String    @db.VarChar(150)
-  email          String    @db.VarChar(150)
-  address        String    @db.VarChar(150)
-  phone          String    @db.VarChar(150)
-  cellphone      String    @db.VarChar(80)
-  isActive       Boolean
-  imageUrl       String?   @db.VarChar(500)
-  createdAt      DateTime  @default(now()) @db.Date
-  createdBy      Int
-  modifiedAt     DateTime? @db.Date
-  modifiedBy     Int?
-  reports        reports[]
+  id               Int                @id @unique(map: "id") @default(autoincrement())
+  identification   String             @unique(map: "employee_identification") @db.VarChar(80)
+  firstName        String             @db.VarChar(150)
+  lastName         String             @db.VarChar(150)
+  email            String             @db.VarChar(150)
+  address          String             @db.VarChar(150)
+  phone            String             @db.VarChar(150)
+  cellphone        String             @db.VarChar(80)
+  isActive         Boolean
+  imageUrl         String?            @db.VarChar(500)
+  createdAt        DateTime           @default(now()) @db.Date
+  createdBy        Int
+  modifiedAt       DateTime?          @db.Date
+  modifiedBy       Int?
+  employeeRequests employeeRequests[]
+  reportComments   reportComments[]
+  reports          reports[]
 }
 
 model company {
@@ -94,15 +97,21 @@ model clientRequestResponses {
 }
 
 model clientsRequests {
-  id         Int       @id @default(autoincrement())
-  clientId   Int
-  isRead     Boolean
-  request    String    @db.Text
-  createdAt  DateTime  @default(now()) @db.Date
-  createdBy  Int
-  modifiedAt DateTime? @db.Date
-  modifiedBy Int?
-  isDeleted  Boolean
+  id                 Int                @id @default(autoincrement())
+  identification     String             @db.VarChar(100)
+  isClosed           Boolean
+  request            String             @db.Text
+  requestTypeId      Int
+  createdAt          DateTime           @default(now()) @db.Date
+  createdBy          Int
+  modifiedAt         DateTime?          @db.Date
+  modifiedBy         Int?
+  isDeleted          Boolean
+  clients            clients            @relation(fields: [identification], references: [identification], onUpdate: Restrict, map: "fk_cli_clients")
+  clientRequestTypes clientRequestTypes @relation(fields: [requestTypeId], references: [id], onUpdate: Restrict, map: "fk_cli_request_type")
+
+  @@index([identification], map: "fk_cli_clients")
+  @@index([requestTypeId], map: "fk_cli_request_type")
 }
 
 model documentTypes {
@@ -122,14 +131,19 @@ model employeeRequestComments {
 }
 
 model employeeRequests {
-  id           Int       @id @default(autoincrement())
-  employeeId   Int
-  documentType Int
-  createdAt    DateTime  @default(now()) @db.Date
-  isRead       Boolean
-  observations String?   @db.VarChar(500)
-  modifiedAt   DateTime? @db.Date
-  modifiedBy   Int?
+  id                   Int                  @id @default(autoincrement())
+  identification       String               @db.VarChar(100)
+  requestTypeId        Int
+  createdAt            DateTime             @default(now()) @db.Date
+  isClosed             Boolean
+  observations         String?              @db.VarChar(500)
+  modifiedAt           DateTime?            @db.Date
+  modifiedBy           Int?
+  employees            employees            @relation(fields: [identification], references: [identification], onUpdate: Restrict, map: "fk_emp_employees")
+  employeeRequestTypes employeeRequestTypes @relation(fields: [requestTypeId], references: [id], onUpdate: Restrict, map: "fk_emp_request_type")
+
+  @@index([requestTypeId], map: "fk_emp_request_type")
+  @@index([identification], map: "fk_emp_employees")
 }
 
 model reportCommentPhotos {
@@ -146,12 +160,16 @@ model reportCommentPhotos {
 model reportComments {
   id         Int       @id @default(autoincrement())
   reportId   Int
+  employeeId String    @db.VarChar(20)
   comments   String    @db.Text
   createdBy  Int
-  createdAt  DateTime  @default(now()) @db.Date
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  isDeleted  Boolean   @default(false)
   modifiedBy Int?
-  modifiedAt DateTime? @db.Date
-  isDeleted  Boolean
+  modifiedAt DateTime? @db.Timestamp(0)
+  employees  employees @relation(fields: [employeeId], references: [identification], onUpdate: Restrict, map: "fk_comm_employee")
+
+  @@index([employeeId], map: "fk_comments_employee")
 }
 
 model reportPhotos {
@@ -232,4 +250,20 @@ model recoveryCodes {
   code           String   @db.VarChar(10)
   createdAt      DateTime @default(now()) @db.Timestamp(0)
   isVerified     Boolean
+}
+
+model employeeRequestTypes {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(150)
+  description      String?            @db.VarChar(500)
+  isActive         Boolean
+  employeeRequests employeeRequests[]
+}
+
+model clientRequestTypes {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(150)
+  description     String            @db.VarChar(500)
+  isActive        Boolean
+  clientsRequests clientsRequests[]
 }

@@ -70,4 +70,35 @@ export default function setupReportRoutes(app: any): void {
             next(error);
         }
     });
+
+    app.post('/report-comments', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+
+            const { id: userId, identification } = req.user as { id: number, identification: string };
+            const newReportComment = {
+                ...req.body,
+                createdBy: userId,
+                isDeleted: false,
+                employeeId: identification
+            }
+
+            const { data } = await service.CreateReportComment(newReportComment);
+            return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+        } catch (error) {
+            console.log(error)
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
+
+    app.get('/reports-comments/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { data } = await service.GetCommentsByReportId(+id);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
 }

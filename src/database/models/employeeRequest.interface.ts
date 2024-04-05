@@ -1,8 +1,8 @@
 export interface EmployeeRequest {
     id: number;
-    documentType: number;
-    employeeId: number;
-    isRead: boolean;
+    identification: string;
+    requestTypeId: number;
+    isClosed: boolean;
     observations?: string | null;
     createdAt: Date;
     modifiedAt?: Date | null;

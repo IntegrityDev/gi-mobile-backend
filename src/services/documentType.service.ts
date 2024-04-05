@@ -51,6 +51,18 @@ class DocumentTypeService {
             throw error;
         }
     }
+
+
+    async GetRequestTypes(isForEmployee: boolean) {
+        try {
+            if (isForEmployee){
+                return FormateData(await this.repository.GetEmployeeRequestTypes());
+            }
+            return FormateData(await this.repository.GetClientRequestTypes());
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default DocumentTypeService;
