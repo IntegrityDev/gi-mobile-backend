@@ -122,6 +122,53 @@ class EmployeeRepository {
     }
   }
 
+  async GetByIdentification(identification: string): Promise<Employee | null> {
+    try {
+      let client: Client | null = null;
+      const employee = await this.prisma.employees.findFirst({
+        where: {
+          identification,
+        },
+      });
+      
+      return {...employee, client } as Employee;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetByClientIdentification(identification: string): Promise<Employee[] | null> {
+    try {
+      const client = await this.prisma.clients.findFirst({where:{
+        identification
+      }})
+      if (client){
+        const clientEmployee = await this.prisma.clientEmployees.findMany({
+          where: {
+            clientId: client.id,
+          },
+          select: {
+            employeeId: true,
+          },
+        });
+
+        if (clientEmployee) {
+          const _ids = clientEmployee.map((register) => register.employeeId);
+          return await this.prisma.employees.findMany({
+            where: {
+              id: {
+                in: _ids,
+              },
+            },
+          });
+        }
+      }
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetByClientId(clientId: number): Promise<Employee[] | null> {
     try {
       const clientEmployee = await this.prisma.clientEmployees.findMany({

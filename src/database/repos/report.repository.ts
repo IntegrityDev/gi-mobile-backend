@@ -53,6 +53,106 @@ class ReportRepository {
         }
     }
 
+    async GetAllOwnReports(userId: number): Promise<Report[]> {
+        try {
+            return await this.prisma.reports.findMany({
+              where: {
+                createdBy: userId,
+              },
+              include: {
+                laborAreas: true,
+                clients: true,
+                employees: true,
+                reportPhotos: true,
+              },
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetAllForClient(identification: string): Promise<Report[]> {
+        try {
+            const client = await this.prisma.clients.findFirst({
+                where: {
+                    identification
+                }
+            })
+
+            if (!client) {
+                return [];
+            }
+
+            const clientReports = await this.prisma.reports.findMany({
+              where: {
+                clientId: client.id,
+              },
+              include: {
+                laborAreas: true,
+                clients: true,
+                employees: true,
+                reportPhotos: true,
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+              take: 5,
+            });
+   
+               return clientReports;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetAllForEmployee(identification: string): Promise<Report[]> {
+        try {
+            const employee = await this.prisma.employees.findFirst({
+                where: { identification }
+            })
+            if (employee) {
+                const clientEmployee = await this.prisma.clientEmployees.findFirst({
+                  where: {
+                    employeeId: employee.id,
+                  },
+                });
+                
+                if (clientEmployee) {
+                    const client = await this.prisma.clients.findFirst({
+                        where: {
+                            id: clientEmployee.clientId
+                        }
+                    })
+
+                    if (!client) {
+                        return [];
+                    }
+                   const clientReports = await this.prisma.reports.findMany({
+                     where: {
+                         clientId: client.id,
+                     },
+                     include: {
+                        laborAreas: true,
+                        clients: true,
+                        employees: true,
+                        reportPhotos: true,
+                     },
+                     orderBy: {
+                       createdAt: "desc",
+                     }
+                   });
+
+                   return clientReports;
+                }
+            }       
+
+            return [];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async GetLastFive(): Promise<Report[]> {
         try {
             return await this.prisma.reports.findMany({
@@ -83,7 +183,7 @@ class ReportRepository {
             }
            const clientReports = await this.prisma.reports.findMany({
              where: {
-               
+               clientId: client.id
              },
              include: {
                laborAreas: true,

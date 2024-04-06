@@ -10,7 +10,7 @@ export default function setupEmployeeRoutes(app: any): void {
     
     app.get('/employees', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            const { data } = await service.GetAll();
+            const { data } = await service.GetAll(req.user);
             return res.json(data);
         } catch (error) {
             console.error("Error en el servidor:", error);
@@ -127,6 +127,17 @@ export default function setupEmployeeRoutes(app: any): void {
             res.status(STATUS_CODES.INTERNAL_ERROR).json({
                 message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD
             });
+        }
+    });
+
+    app.get('/my-information/:identification', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { identification } = req.params;
+            const { data } = await service.GetByIdentification(identification);
+            return res.json(data);
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
         }
     });
 }

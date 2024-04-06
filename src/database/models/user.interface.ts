@@ -15,9 +15,13 @@ export interface User {
   firstName?: string | null;
   lastName?: string | null;
   imageUrl?: string | null;
+  activationCode: string
+  activationDate: Date
 }
 
-export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {}
+export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {
+  
+}
 
 export interface ListUser extends Omit<User, 'password' | 'salt' > {
   firstName?: string | null;

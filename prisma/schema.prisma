@@ -26,6 +26,8 @@ model users {
   identificationId String    @db.VarChar(80)
   password         String    @db.VarChar(300)
   isVerified       Boolean
+  activationCode   String    @db.VarChar(10)
+  activationDate   DateTime  @default(now()) @db.Timestamp(0)
   salt             String    @db.VarChar(300)
   createdAt        DateTime  @default(now()) @db.Date
   createdBy        Int?
@@ -134,9 +136,9 @@ model employeeRequests {
   id                   Int                  @id @default(autoincrement())
   identification       String               @db.VarChar(100)
   requestTypeId        Int
-  createdAt            DateTime             @default(now()) @db.Date
+  createdAt            DateTime             @default(now()) @db.Timestamp(0)
   isClosed             Boolean
-  observations         String?              @db.VarChar(500)
+  observations         String?              @db.Text
   modifiedAt           DateTime?            @db.Date
   modifiedBy           Int?
   employees            employees            @relation(fields: [identification], references: [identification], onUpdate: Restrict, map: "fk_emp_employees")

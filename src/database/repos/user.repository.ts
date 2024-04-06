@@ -4,6 +4,7 @@ import {
   CreateUser,
   Employee,
   ListUser,
+  Profile,
   User,
   UserEmployee,
   UserProfile,
@@ -22,6 +23,38 @@ class UserRepository {
         data: user,
       });
       return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CreateUserProfile(
+    userId: number,
+    profileId: number,
+    createdBy: number
+  ): Promise<UserProfile> {
+    try {
+      const userEntry = await this.prisma.userProfiles.create({
+        data: {
+          userId,
+          profileId,
+          createdBy,
+          isDeleted: false,
+        },
+      });
+      return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetClientProfile(): Promise<Profile | null> {
+    try {
+      return await this.prisma.profiles.findFirst({
+        where: {
+          isClient: true,
+        },
+      });
     } catch (error) {
       throw error;
     }
@@ -139,40 +172,48 @@ class UserRepository {
           userId,
         },
         include: {
-          profiles: true
-        }
+          profiles: true,
+        },
       });
     } catch (error) {
       throw error;
     }
-}
+  }
 
   async FindUserByIdentification(
     identificationId: string
   ): Promise<User | null> {
     try {
-      let name = "", firstName = "", lastName = "", imageUrl = null;
+      let name = "",
+        firstName = "",
+        lastName = "",
+        imageUrl = null;
       const user = await this.prisma.users.findFirst({
         where: {
           identificationId,
+          isDeleted: false,
         },
       });
 
       if (user) {
-        const employee = await this.FindEmployeeByIdentification(user.identificationId);
+        const employee = await this.FindEmployeeByIdentification(
+          user.identificationId
+        );
         if (employee) {
           name = `${employee.firstName} ${employee.lastName}`;
           firstName = employee.firstName;
           lastName = employee.lastName;
           imageUrl = employee.imageUrl;
         } else {
-          const client = await this.FindClientByIdentification(user.identificationId);
+          const client = await this.FindClientByIdentification(
+            user.identificationId
+          );
           if (client) {
             name = client.name;
-            imageUrl = client.imageUrl
+            imageUrl = client.imageUrl;
           }
         }
-        return {...user, name, firstName, lastName, imageUrl } as User
+        return { ...user, name, firstName, lastName, imageUrl } as User;
       }
       return user;
     } catch (error) {
@@ -221,7 +262,9 @@ class UserRepository {
     }
   }
 
-  async FindClientByIdentification(identification: string): Promise<Client | null> {
+  async FindClientByIdentification(
+    identification: string
+  ): Promise<Client | null> {
     try {
       return await this.prisma.clients.findFirst({
         where: {
@@ -257,13 +300,13 @@ class UserRepository {
     isVerified,
     code,
     email,
-    createdAt
+    createdAt,
   }: {
     identification: string;
     email: string;
     code: string;
     isVerified: boolean;
-    createdAt: Date
+    createdAt: Date;
   }): Promise<any> {
     try {
       const userEntry = await this.prisma.recoveryCodes.create({
@@ -289,7 +332,45 @@ class UserRepository {
         data: {
           code,
           isVerified,
-          createdAt: new Date()
+          createdAt: new Date(),
+        },
+      });
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async ActivateUser(id: number): Promise<any | null> {
+    try {
+      const updated = await this.prisma.users.update({
+        where: {
+          id,
+        },
+        data: {
+          isVerified: true,
+          modifiedAt: new Date(),
+        },
+      });
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async SetNewActivationCodeAndDate(
+    id: number,
+    activationCode: string
+  ): Promise<any | null> {
+    try {
+      const updated = await this.prisma.users.update({
+        where: {
+          id,
+        },
+        data: {
+          activationCode,
+          activationDate: new Date(),
+          modifiedAt: new Date(),
         },
       });
       return updated;
@@ -322,7 +403,39 @@ class UserRepository {
         where: {
           email,
           code,
-          isVerified: false
+          isVerified: false,
+        },
+      });
+      return recoveryCode;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetActivationCodeByIdentificationAndCode(
+    identification: string,
+    code: string
+  ): Promise<any | null> {
+    try {
+      const recoveryCode = await this.prisma.users.findFirst({
+        where: {
+          identificationId: identification,
+          activationCode: code,
+        },
+      });
+      return recoveryCode;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetActivationCodeByIdentification(
+    identification: string
+  ): Promise<any | null> {
+    try {
+      const recoveryCode = await this.prisma.users.findFirst({
+        where: {
+          identificationId: identification,
         },
       });
       return recoveryCode;
@@ -340,7 +453,7 @@ class UserRepository {
         where: {
           email,
           code,
-          isVerified: true
+          isVerified: true,
         },
       });
       return recoveryCode;

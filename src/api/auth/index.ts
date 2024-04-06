@@ -78,4 +78,33 @@ export default function setupAuthRoutes(app: any): void {
             });
         }
     });
+
+    app.post('/auth/activate-user', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { identification, code } = req.body;
+            const { data } = await service.VerifyActivationCode(
+              identification,
+              code
+            );
+            return res.status(data?.statusCode).json(data);
+        } catch (error) {
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR
+            });
+        }
+    });
+
+    app.post('/auth/resend-activation-code', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { identification } = req.body;
+            const { data } = await service.ResendActivationCode(
+              identification
+            );
+            return res.status(data?.statusCode).json(data);
+        } catch (error) {
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR
+            });
+        }
+    });
 }

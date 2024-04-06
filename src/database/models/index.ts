@@ -7,7 +7,7 @@ import { ClientRequest } from "./clientRequest.interface";
 import { Company } from "./company.interface";
 import { DocumentType } from "./documentType.interface";
 import { EmployeeRequestComment } from "./employeeRequestComment";
-import { EmployeeRequest } from "./employeeRequest.interface";
+import { EmployeeRequest, CreateEmployeeRequest } from "./employeeRequest.interface";
 import { Employee, CreateEmployee, UpdateEmployee } from "./employee.interface";
 import { ReportCommentPhoto } from "./reportCommentPhoto.interface";
 import { ReportComment, CreateReportComment } from "./reportComment.interface";
@@ -40,6 +40,7 @@ export {
     UpdateEmployee,
     EmployeeRequestComment,
     EmployeeRequest,
+    CreateEmployeeRequest,
     Report,
     CreateReport,
     UpdateReport,

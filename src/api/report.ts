@@ -10,8 +10,7 @@ export default function setupReportRoutes(app: any): void {
     
     app.get('/reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            //const { id: userId } = req.user;
-            const { data } = await service.GetAll(1);
+            const { data } = await service.GetAll(req.user);
             return res.json(data);
         } catch (error) {
             next(error);
@@ -96,6 +95,16 @@ export default function setupReportRoutes(app: any): void {
         try {
             const { id } = req.params;
             const { data } = await service.GetCommentsByReportId(+id);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    app.get('/own-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id: userId } = req.user;
+            const { data } = await service.GetAllOwnReports(userId);
             return res.json(data);
         } catch (error) {
             next(error);

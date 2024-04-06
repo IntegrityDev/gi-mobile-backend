@@ -7,7 +7,7 @@ import ClientRequestResponseRepository from "./clientRequestResponse.repository"
 import CompanyRepository from "./company.repository";
 import DocumentTypeRepository from "./documentType.repository";
 import EmployeeRepository from "./employee.repository";
-import EmployeeRequestRepository from "./employeeRequest.repository";
+import RequestRepository from "./request.repository";
 import EmployeeRequestCommentRepository from "./employeeRequestComment.repository";
 import ReportRepository from "./report.repository";
 import ReportCommentRepository from "./reportComment.repository";
@@ -27,7 +27,7 @@ export {
     CompanyRepository,
     DocumentTypeRepository,
     EmployeeRepository,
-    EmployeeRequestRepository,
+    RequestRepository,
     EmployeeRequestCommentRepository,
     ReportRepository,
     ReportCommentRepository,

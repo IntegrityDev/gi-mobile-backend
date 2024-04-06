@@ -9,3 +9,6 @@ export interface EmployeeRequest {
     modifiedBy?: number | null;
   }
   
+  export interface CreateEmployeeRequest extends Omit<EmployeeRequest, 'id' | 'createdAt'> {}
+
+  export interface UpdateEmployeeRequest extends Omit<EmployeeRequest, 'id' | 'identification' | 'createdAt' | 'createdBy'> {}

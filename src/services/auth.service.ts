@@ -13,6 +13,8 @@ import EmailService from "./email.service";
 
 interface UserInputs {
   identificationId: string;
+  identification: string;
+  isClient: string;
   password: string;
   newPassword?: string;
   id?: number;
@@ -54,7 +56,7 @@ class AuthService {
               name,
               firstName,
               lastName,
-              imageUrl
+              imageUrl,
             } = existingUser;
 
             let isSupervisor = false,
@@ -82,7 +84,7 @@ class AuthService {
                 }
               });
             } else {
-              isEmployee = true
+              isEmployee = true;
             }
 
             const token: string = await GenerateSignature({
@@ -140,46 +142,97 @@ class AuthService {
   }
 
   public async SignUp(userInputs: UserInputs): Promise<any> {
-    const { identificationId, password } = userInputs;
+    const { identification, password, isClient } = userInputs;
 
     try {
-      //Verifying if user exists
       let existingUser: User | null =
-        await this.repository.FindUserByIdentification(identificationId);
+        await this.repository.FindUserByIdentification(identification);
 
       if (existingUser) {
         return FormateData({
           created: false,
           message: RESPONSE_MESSAGES.USER_EXISTS,
-          statusCode: STATUS_CODES.BAD_REQUEST,
+          statusCode: STATUS_CODES.OK,
         });
       }
 
-      //Verifying if user with identification have employee record
-      const employee = await this.repository.FindEmployeeByIdentification(
-        identificationId
-      );
-      if (!employee) {
+      const userExists: Employee | Client | null = !isClient
+        ? await this.repository.FindEmployeeByIdentification(identification)
+        : await this.repository.FindClientByIdentification(identification);
+
+      if (!userExists) {
         return FormateData({
           created: false,
-          message: RESPONSE_MESSAGES.USER_NO_HAVE_EMPLOYEE,
-          statusCode: STATUS_CODES.BAD_REQUEST,
+          message: !isClient
+            ? RESPONSE_MESSAGES.USER_NO_HAVE_EMPLOYEE
+            : RESPONSE_MESSAGES.USER_NO_HAVE_CLIENT,
+          statusCode: STATUS_CODES.OK,
+        });
+      }
+
+      if (!userExists.email) {
+        return FormateData({
+          created: false,
+          message: RESPONSE_MESSAGES.USER_NO_HAVE_EMAIL.replace(
+            "{IDENTIFICATION_TYPE}",
+            `${isClient ? "NIT" : "Número de identificación"}`
+          ),
+          statusCode: STATUS_CODES.OK,
         });
       }
 
       let salt: string = await GenerateSalt();
+      const activationCode: string = this.generateActivateCode();
       let userPassword: string = await GeneratePassword(password, salt);
       const newUser: CreateUser = {
-        identificationId,
+        identificationId: identification,
         password: userPassword,
         isVerified: false,
         salt,
         isDeleted: false,
+        activationCode,
+        activationDate: new Date(),
       };
       existingUser = await this.repository.CreateUser(newUser);
+
+      if (existingUser) {
+        if (isClient) {
+          const clientProfile = await this.repository.GetClientProfile();
+          if (clientProfile) {
+            await this.repository.CreateUserProfile(
+              existingUser.id,
+              clientProfile.id,
+              0
+            );
+          }
+        }
+
+        const { name, firstName, lastName } = existingUser;
+        const emailService = new EmailService();
+
+        try {
+          const senderEmail = await emailService.SendEmail({
+            title: EMAIL_TEMPLATES.ACTIVATE_ACCOUNT,
+            name: isClient ? name! : `${firstName!} ${lastName!}`,
+            subject: `Código de activación ${activationCode}`,
+            email: userExists.email,
+            message: `<strong style="font-size: 26px; letter-spacing: 4px;">${activationCode}</strong> <p>es el código de activación de tu cuenta en GIAPP, este código es válido por 24 horas.</p>`,
+          });
+        } catch (error) {
+          console.log("Error enviado el email", error);
+        }
+
+        return FormateData({
+          created: true,
+          user: existingUser.id,
+          statusCode: STATUS_CODES.OK,
+        });
+      }
+
       return FormateData({
-        created: true,
-        user: existingUser.id,
+        created: false,
+        message:
+          "Se produjo un error al crear el usuario. Por favor, ponte en contacto con el soporte técnico para obtener ayuda.",
         statusCode: STATUS_CODES.OK,
       });
     } catch (error) {
@@ -232,6 +285,19 @@ class AuthService {
   generateCode() {
     const codigo = Math.floor(100000 + Math.random() * 900000);
     return codigo.toString();
+  }
+
+  generateActivateCode() {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+    const codeLength = 6;
+
+    for (let i = 0; i < codeLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters[randomIndex];
+    }
+
+    return code;
   }
 
   public async ResetPassword(userInputs: UserInputs): Promise<any> {
@@ -357,6 +423,190 @@ class AuthService {
         message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
         statusCode: STATUS_CODES.OK,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async VerifyActivationCode(
+    identification: string,
+    code: string
+  ): Promise<any> {
+    try {
+      const verifyActivationCode =
+        await this.repository.GetActivationCodeByIdentificationAndCode(
+          identification?.trim(),
+          code?.trim()
+        );
+
+      if (verifyActivationCode) {
+        if (verifyActivationCode.isVerified) {
+          return FormateData({
+            verifyActivationCode: false,
+            message: RESPONSE_MESSAGES.CODE_VERIFIED_USED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
+        const _now = Date.now();
+        const differenceTime = _now - verifyActivationCode?.activationDate;
+        const differenceDays = differenceTime / (1000 * 60 * 60 * 24);
+
+        if (differenceDays < 1) {
+          const updateVerify = await this.repository.ActivateUser(
+            verifyActivationCode?.id
+          );
+          if (updateVerify) {
+            let userExists: Employee | Client | null =
+              await this.repository.FindEmployeeByIdentification(
+                identification
+              );
+            let isValidUser = false;
+            let isEmployee = false;
+            if (userExists) {
+              isValidUser = true;
+              isEmployee = true;
+            } else {
+              userExists = await this.repository.FindClientByIdentification(
+                identification
+              );
+              if (userExists) {
+                isValidUser = true;
+              }
+            }
+            try {
+              let name = "";
+              if (isEmployee) {
+                const _employee = userExists as Employee;
+                name = `${_employee.firstName} ${_employee.lastName}`;
+              } else {
+                const _client = userExists as Client;
+                name = _client.name;
+              }
+
+              if (isValidUser) {
+                const emailService = new EmailService();
+                await emailService.SendEmail({
+                  title: EMAIL_TEMPLATES.WELCOME,
+                  name: name!,
+                  subject: `${name} ${EMAIL_TEMPLATES.WELCOME}`,
+                  email: userExists?.email!,
+                  message: `Hola <strong>${name}</strong>,
+                <p>Te informamos que tu cuenta ha sido activada con éxito en GIAPP. Ahora puedes iniciar sesión sin problemas.</p>`,
+                });
+              }
+            } catch (error) {
+              console.log(
+                "Error sending notify about changed password: ",
+                error
+              );
+            }
+            return FormateData({
+              verifyActivationCode: true,
+              message: RESPONSE_MESSAGES.CODE_VERIFIED,
+              statusCode: STATUS_CODES.OK,
+              identification: verifyActivationCode?.identification,
+            });
+          } else {
+            return FormateData({
+              verifyActivationCode: true,
+              message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
+              statusCode: STATUS_CODES.OK,
+            });
+          }
+        } else {
+          return FormateData({
+            verifyActivationCode: false,
+            expired: true,
+            message: RESPONSE_MESSAGES.CODE_VERIFIED_EXPIRED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
+      }
+      return FormateData({
+        verifyActivationCode: false,
+        message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
+        statusCode: STATUS_CODES.OK,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async ResendActivationCode(
+    identification: string
+  ): Promise<any> {
+    try {
+      const verifyActivationCode =
+        await this.repository.GetActivationCodeByIdentification(
+          identification?.trim()
+        );
+
+      if (verifyActivationCode) {
+        if (verifyActivationCode.isVerified) {
+          return FormateData({
+            resent: false,
+            message: RESPONSE_MESSAGES.USER_ALREADY_ACTIVED,
+            statusCode: STATUS_CODES.OK,
+          });
+        }
+        const _now = Date.now();
+        const activationCode: string = this.generateActivateCode();
+
+        const updateVerifyCodeAndDate = await this.repository.SetNewActivationCodeAndDate(
+          verifyActivationCode?.id,
+          activationCode
+        );
+        if (updateVerifyCodeAndDate) {
+          let userExists: Employee | Client | null =
+            await this.repository.FindEmployeeByIdentification(identification);
+          let isValidUser = false;
+          let isEmployee = false;
+          if (userExists) {
+            isValidUser = true;
+            isEmployee = true;
+          } else {
+            userExists = await this.repository.FindClientByIdentification(
+              identification
+            );
+            if (userExists) {
+              isValidUser = true;
+            }
+          }
+          if (isValidUser) {
+            try {
+              let name = "";
+              if (isEmployee) {
+                const _employee = userExists as Employee;
+                name = `${_employee.firstName} ${_employee.lastName}`;
+              } else {
+                const _client = userExists as Client;
+                name = _client.name;
+              }
+              const emailService = new EmailService();
+              await emailService.SendEmail({
+                title: EMAIL_TEMPLATES.ACTIVATE_ACCOUNT,
+                name: name,
+                subject: `Código de activación ${activationCode}`,
+                email: userExists?.email!,
+                message: `<strong style="font-size: 26px; letter-spacing: 4px;">${activationCode}</strong> <p>es el código de activación de tu cuenta en GIAPP, este código es válido por 24 horas.</p>`,
+              });
+            } catch (error) {
+              console.log("Error enviado el email", error);
+            }
+          }
+          return FormateData({
+            resent: true,
+            message: RESPONSE_MESSAGES.CODE_VERIFIED,
+            statusCode: STATUS_CODES.OK,
+            identification: verifyActivationCode?.identification,
+          });
+        }
+        return FormateData({
+          resent: false,
+          message: RESPONSE_MESSAGES.CODE_VERIFIED_FAILED,
+          statusCode: STATUS_CODES.OK,
+        });
+      }
     } catch (error) {
       throw error;
     }

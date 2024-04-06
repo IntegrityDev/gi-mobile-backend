@@ -34,9 +34,27 @@ class EmployeeService {
         }
     }
 
-    async GetAll() {
+    async GetAll(user: any) {
         try {
-            return FormateData(await this.repository.GetAll());
+            const {
+                identification,
+                id: userId,
+                isSupervisor,
+                isSuperAdmin,
+                isAdmin,
+                isClient,
+              } = user;
+  
+              if (isSuperAdmin || isSupervisor || isAdmin) {
+                return FormateData(await this.repository.GetAll());
+              } else if (isClient) {
+                  return FormateData(
+                    await this.repository.GetByClientIdentification(
+                      identification
+                    )
+                  );
+              } 
+              return FormateData([])            
         } catch (error) {
             throw error;
         }
@@ -45,6 +63,14 @@ class EmployeeService {
     async GetById(id: number) {
         try {
             return FormateData(await this.repository.GetById(id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetByIdentification(identification: string) {
+        try {
+            return FormateData(await this.repository.GetByIdentification(identification));
         } catch (error) {
             throw error;
         }

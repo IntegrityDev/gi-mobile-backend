@@ -6,7 +6,7 @@ import ClientRequestResponseService from './clientRequestResponse.service';
 import CompanyService from './company.service';
 import DocumentTypeService from './documentType.service';
 import EmployeeService from './employee.service';
-import EmployeeRequestService from './employeeRequest.service';
+import EmployeeRequestService from './request.service';
 import EmployeeRequestCommentService from './employeeRequestResponse.service';
 import ReportService from './report.service';
 import ReportCommentService from './reportComment.service';
@@ -16,6 +16,7 @@ import VisitService from './visit.service';
 import AuthService from './auth.service';
 import UserProfileService from './userProfile.service';
 import LaborAreaService from './laborArea.service';
+import RequestService from './request.service';
 
 export {
   UserService,
@@ -35,5 +36,6 @@ export {
   VisitService,
   AuthService,
   UserProfileService,
-  LaborAreaService
+  LaborAreaService,
+  RequestService
 };
