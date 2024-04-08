@@ -32,6 +32,15 @@ class NotificationService {
     }
   }
 
+  async ReadNotification(id: number) {
+    try {
+      const data = await this.repository.ReadNotification(id);
+      return FormateData(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Delete(id: number, userId: number) {
     try {
       const data = await this.repository.Delete(id, userId);

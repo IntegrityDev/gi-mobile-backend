@@ -40,4 +40,17 @@ export default function setupNotificationRoutes(app: any): void {
       }
     }
   );
+
+  app.post('/notifications', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+    try {
+        const { notificationId } = req.body;        
+        const { data } = await service.ReadNotification(notificationId);
+        return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+            message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+        });
+    }
+});
 }

@@ -44,14 +44,14 @@ export default function setupReportRoutes(app: any): void {
     app.post('/reports', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
 
-            const { id: userId } = req.user as { id: number };
+            const { id: userId, identification } = req.user as { id: number, identification: string };
             const newReport = {
                 ...req.body,
                 createdBy: userId,
                 isDeleted: false
             }
 
-            const { data } = await service.Create(newReport);
+            const { data } = await service.Create(newReport, identification);
             return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
         } catch (error) {
             console.log(error)

@@ -11,16 +11,27 @@ class ReportRepository {
         this.prisma = this.prismaInstance.prisma;
     }
 
-    async Create(report: CreateReport): Promise<Report | null> {
+    async Create(report: CreateReport, identification: string): Promise<Report | null> {
         try {
-            const userEntry = await this.prisma.reports.create({
-              data: report,
-              include: {
-                clients: true,
-                employees: true
-              },
-            });
-            return userEntry;
+            if (identification) {
+                const employee = await this.prisma.employees.findFirst(({
+                    where: {
+                        identification
+                    }
+                }))
+                if (!employee){
+                    return null;
+                }
+                return await this.prisma.reports.create({
+                  data: {...report, employeeId: employee?.id},
+                  include: {
+                    clients: true,
+                    employees: true,
+                  },
+                });
+            }
+            
+            return null;
             
         } catch (error) {
             throw error;

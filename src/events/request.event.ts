@@ -28,7 +28,7 @@ requestEmitter.on("employee-request-created", async (employeeRequest: EmployeeRe
                         title,
                         message,
                         employeeRequest.id,
-                        "Peticiones"
+                        "AddRequest"
                       );
                       const employee = await userRepository.FindEmployeeByIdentification(user.identificationId);
                       if (employee) {
@@ -84,7 +84,7 @@ requestEmitter.on(
                   title,
                   message,
                   clientRequest.id,
-                  "Peticiones"
+                  "AddRequest"
                 );
                 const employee = await userRepository.FindEmployeeByIdentification(user.identificationId);
                 if (employee) {

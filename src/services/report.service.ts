@@ -11,9 +11,9 @@ class ReportService {
     this.repository = new ReportRepository();
   }
 
-  async Create(entry: CreateReport) {
+  async Create(entry: CreateReport, identification: string) {
     try {
-      const entityCreated = await this.repository.Create(entry);
+      const entityCreated = await this.repository.Create(entry, identification);
       return FormateData(entityCreated);
     } catch (error) {
       throw error;

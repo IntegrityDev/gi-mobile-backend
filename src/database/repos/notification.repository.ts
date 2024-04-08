@@ -85,6 +85,21 @@ class NotificationRepository {
     }
   }
 
+  async ReadNotification(id: number): Promise<Notification | null> {
+    try {
+      return await this.prisma.notifications.update({
+        where: {
+          id,
+        },
+        data: {
+          isRead: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
 
 export default NotificationRepository;
