@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateVisit, Report, Visit } from "../models";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class VisitRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
  }

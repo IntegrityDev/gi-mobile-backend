@@ -1,3 +1,5 @@
+import { Client } from "./client.interface";
+
 export interface ClientRequest {
     id: number;
     identification: string;
@@ -10,6 +12,8 @@ export interface ClientRequest {
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
     observations?: string;
+    clients?: Client | null;
+    clientRequestTypes?: any | null
   }
   
   export interface CreateClientRequest extends Omit<ClientRequest, 'id' | 'createdAt'> {

@@ -1,12 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { Client, CreateEmployee, CustomError, Employee, UpdateEmployee } from "../models";
 import { RESPONSE_MESSAGES } from "../../constants";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class EmployeeRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async Create(employee: CreateEmployee): Promise<Employee | CustomError> {

@@ -1,6 +1,8 @@
 import { CreateReport, CreateReportComment, Report } from "../database/models";
 import { ReportRepository } from "../database/repos";
 import { FormateData } from "../utils";
+import { PrismaClient } from '@prisma/client';
+import PrismaInstance from "../utils/PrismaInstance";
 
 class ReportService {
   private repository: ReportRepository;

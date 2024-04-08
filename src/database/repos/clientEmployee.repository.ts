@@ -6,12 +6,15 @@ import {
   Employee,
 } from "../models";
 import { RESPONSE_MESSAGES } from "../../constants";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class ClientEmployeeRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async Create(
@@ -30,13 +33,16 @@ class ClientEmployeeRepository {
 
       if (existingClientEmployee) {
         const employee = await this.prisma.employees.findUnique({
-            where: {
-                id: existingClientEmployee.employeeId!
-            }
-        })
+          where: {
+            id: existingClientEmployee.employeeId!,
+          },
+        });
         customError = {
           created: false,
-          message: RESPONSE_MESSAGES.EMPLOYEE_ALREADY_ASSIGNED.replace("{identification}", employee?.identification || ""),
+          message: RESPONSE_MESSAGES.EMPLOYEE_ALREADY_ASSIGNED.replace(
+            "{identification}",
+            employee?.identification || ""
+          ),
         };
         return customError;
       }
@@ -92,8 +98,6 @@ class ClientEmployeeRepository {
         const employeeIds = existsClientEmployee.map(
           (clientEmployee) => clientEmployee.employeeId!
         );
-
-
 
         const employees = await this.prisma.employees.findMany({
           where: {

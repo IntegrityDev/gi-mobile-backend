@@ -3,7 +3,7 @@ import { RESPONSE_MESSAGES, STATUS_CODES } from '../constants';
 import AuthMiddleware from './middlewares/auth';
 import { CustomRequest, Report } from '../database/models';
 import { ReportPhotoService, ReportService } from '../services';
-
+import { PrismaClient } from '@prisma/client';
 
 export default function setupReportRoutes(app: any): void {
     const service = new ReportService();

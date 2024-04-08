@@ -1,12 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 import { ClientRequest, CreateEmployeeRequest, EmployeeRequest } from '../models';
 import { CreateClientRequest } from '../models/clientRequest.interface';
+import PrismaInstance from '../../utils/PrismaInstance';
+import requestEmitter from '../../events/request.event';
 
 class RequestRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async CreateEmployeeRequest(
@@ -33,8 +37,12 @@ class RequestRepository {
         },
         include: {
           employees: true,
+          employeeRequestTypes: true
         },
       });
+      if (userEntry) {
+        requestEmitter.emit("employee-request-created", userEntry);
+      }
       return userEntry;
     } catch (error) {
       throw error;
@@ -67,8 +75,13 @@ class RequestRepository {
         },
         include: {
           clients: true,
+          clientRequestTypes: true
         },
       });
+
+      if (userEntry) {
+        requestEmitter.emit("client-request-created", userEntry);
+      }
       return userEntry;
     } catch (error) {
       throw error;
@@ -85,7 +98,7 @@ class RequestRepository {
         where: {
           id,
         },
-        data: dataToUpdate,
+        data: <any>dataToUpdate,
       });
       return updated;
     } catch (error) {

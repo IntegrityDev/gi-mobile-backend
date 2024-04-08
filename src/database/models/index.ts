@@ -18,6 +18,7 @@ import { CustomRequest } from "./customRequest.interface";
 import { CustomError } from "./customError.interface";
 import { ClientEmployee, CreateClientEmployee } from "./clientEmployee.interface";
 import { LaborArea } from "./laborArea.interface";
+import { Notification } from "./notification.interface";
 
 export {
     CustomRequest,
@@ -55,5 +56,6 @@ export {
     UpdateVisit,
     CustomError,
     ClientEmployee,
-    LaborArea
+    LaborArea,
+    Notification
 }

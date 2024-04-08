@@ -269,3 +269,14 @@ model clientRequestTypes {
   isActive        Boolean
   clientsRequests clientsRequests[]
 }
+
+model notifications {
+  id             Int      @id @default(autoincrement())
+  identification String   @db.VarChar(80)
+  title          String   @db.VarChar(80)
+  message        String   @db.VarChar(150)
+  createdAt      DateTime @default(now()) @db.Timestamp(0)
+  isRead         Boolean
+  objectId       Int
+  screen         String   @db.VarChar(100)
+}

@@ -9,12 +9,15 @@ import {
   UserEmployee,
   UserProfile,
 } from "../models";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class UserRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async CreateUser(user: CreateUser): Promise<User> {
@@ -53,6 +56,18 @@ class UserRepository {
       return await this.prisma.profiles.findFirst({
         where: {
           isClient: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetAdminProfile(): Promise<Profile | null> {
+    try {
+      return await this.prisma.profiles.findFirst({
+        where: {
+          isAdmin: true,
         },
       });
     } catch (error) {

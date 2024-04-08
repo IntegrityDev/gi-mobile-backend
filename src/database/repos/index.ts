@@ -2,7 +2,6 @@ import UserRepository from "./user.repository";
 import ProfileRepository from "./profile.repository";
 import UserProfileRepository from "./userProfile.repository";
 import ClientRepository from "./client.repository";
-import ClientRequestRepository from "./clientRequest.repository";
 import ClientRequestResponseRepository from "./clientRequestResponse.repository";
 import CompanyRepository from "./company.repository";
 import DocumentTypeRepository from "./documentType.repository";
@@ -16,13 +15,13 @@ import ReportPhotoRepository from "./reportPhoto.repository";
 import VisitRepository from "./visit.repository";
 import ClientEmployeeRepository from "./clientEmployee.repository";
 import LaborAreaRepository from "./laborArea.repository";
+import NotificationRepository from "./notification.repository";
 
 export {
     UserRepository,
     ProfileRepository,
     UserProfileRepository,
     ClientRepository,
-    ClientRequestRepository,
     ClientRequestResponseRepository,
     CompanyRepository,
     DocumentTypeRepository,
@@ -35,5 +34,6 @@ export {
     ReportPhotoRepository,
     VisitRepository,
     ClientEmployeeRepository,
-    LaborAreaRepository
+    LaborAreaRepository,
+    NotificationRepository
 }

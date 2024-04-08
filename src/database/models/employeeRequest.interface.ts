@@ -1,3 +1,5 @@
+import { Employee } from "./employee.interface";
+
 export interface EmployeeRequest {
     id: number;
     identification: string;
@@ -7,6 +9,8 @@ export interface EmployeeRequest {
     createdAt: Date;
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
+    employees?: Employee | null;
+    employeeRequestTypes?: any;
   }
   
   export interface CreateEmployeeRequest extends Omit<EmployeeRequest, 'id' | 'createdAt'> {}

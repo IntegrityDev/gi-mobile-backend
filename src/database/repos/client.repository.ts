@@ -1,12 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { Client, CreateClient, CustomError, UpdateClient } from "../models";
 import { RESPONSE_MESSAGES } from "../../constants";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class ClientRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async Create(client: CreateClient): Promise<Client | CustomError> {
@@ -15,14 +18,17 @@ class ClientRepository {
       const existingIdentificationClient = await this.prisma.clients.findFirst({
         where: {
           identification: client.identification,
-          isActive: true
+          isActive: true,
         },
       });
 
       if (existingIdentificationClient) {
         customError = {
           created: false,
-          message: RESPONSE_MESSAGES.IDENTIFICATION_ALREADY_EXISTS.replace('{entity}', "cliente"),
+          message: RESPONSE_MESSAGES.IDENTIFICATION_ALREADY_EXISTS.replace(
+            "{entity}",
+            "cliente"
+          ),
         };
         return customError;
       }
@@ -30,14 +36,17 @@ class ClientRepository {
       const existingEmailClient = await this.prisma.clients.findFirst({
         where: {
           email: client.email,
-          isActive: true
+          isActive: true,
         },
       });
 
       if (existingEmailClient) {
         customError = {
           created: false,
-          message: RESPONSE_MESSAGES.EMAIL_ALREADY_EXISTS.replace('{entity}', "cliente"),
+          message: RESPONSE_MESSAGES.EMAIL_ALREADY_EXISTS.replace(
+            "{entity}",
+            "cliente"
+          ),
         };
         return customError;
       }
@@ -62,9 +71,9 @@ class ClientRepository {
           id,
         },
         data: {
-            ...dataToUpdate,
-            modifiedAt: new Date(),
-            modifiedBy: userId
+          ...dataToUpdate,
+          modifiedAt: new Date(),
+          modifiedBy: userId,
         },
       });
       return updated;

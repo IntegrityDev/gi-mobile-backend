@@ -1,11 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { LaborArea } from "../models";
+import PrismaInstance from "../../utils/PrismaInstance";
 
 class LaborAreaRepository {
+  private prismaInstance: PrismaInstance;
   private prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prismaInstance = PrismaInstance.getInstance();
+    this.prisma = this.prismaInstance.prisma;
   }
 
   async GetAll(): Promise<LaborArea[]> {

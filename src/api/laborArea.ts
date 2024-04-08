@@ -8,7 +8,7 @@ import { LaborAreaService } from '../services';
 export default function setupLaborAreaRoutes(app: any): void {
     const service = new LaborAreaService();
     
-    app.get('/labor-areas',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/labor-areas', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetAll();
             return res.json(data);
@@ -18,7 +18,7 @@ export default function setupLaborAreaRoutes(app: any): void {
         }
     });
 
-    app.get('/labor-areas/:id',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/labor-areas/:id', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetAll();
             return res.json(data);
@@ -28,7 +28,7 @@ export default function setupLaborAreaRoutes(app: any): void {
         }
     });
 
-    app.delete('/labor-areas/:id',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.delete('/labor-areas/:id', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetAll();
             return res.json(data);

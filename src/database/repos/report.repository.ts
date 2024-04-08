@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import { CreateReport, CreateReportComment, Report, ReportComment } from '../models';
+import PrismaInstance from '../../utils/PrismaInstance';
 
 class ReportRepository {
+    private prismaInstance: PrismaInstance;
     private prisma: PrismaClient;
 
     constructor() {
-        this.prisma = new PrismaClient();
+        this.prismaInstance = PrismaInstance.getInstance();
+        this.prisma = this.prismaInstance.prisma;
     }
 
     async Create(report: CreateReport): Promise<Report | null> {

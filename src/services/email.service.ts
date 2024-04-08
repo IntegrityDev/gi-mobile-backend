@@ -3,7 +3,7 @@ import { FormateData } from "../utils";
 import { sendEmail } from "../utils/sendEmail";
 
 interface EmailSender {
-  name: string;
+  name?: string;
   title: string;
   subject: string;
   email: string;

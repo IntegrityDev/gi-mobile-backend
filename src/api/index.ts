@@ -8,16 +8,18 @@ import setupLaborAreaRoutes from "./laborArea";
 import setupReportRoutes from "./report";
 import setupReportPhotoRoutes from "./reportPhoto";
 import setupRequestsRoutes from "./request";
+import setupNotificationRoutes from "./notification";
 
 export {
-    setupAuthRoutes,
-    setupUserRoutes,
-    setupProfileRoutes,
-    setupClientRoutes,
-    setupEmployeeRoutes,
-    setupVisitRoutes,
-    setupLaborAreaRoutes,
-    setupReportRoutes,
-    setupReportPhotoRoutes,
-    setupRequestsRoutes
-}
+  setupAuthRoutes,
+  setupUserRoutes,
+  setupProfileRoutes,
+  setupClientRoutes,
+  setupEmployeeRoutes,
+  setupVisitRoutes,
+  setupLaborAreaRoutes,
+  setupReportRoutes,
+  setupReportPhotoRoutes,
+  setupRequestsRoutes,
+  setupNotificationRoutes,
+};
