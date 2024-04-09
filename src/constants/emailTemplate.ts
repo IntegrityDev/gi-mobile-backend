@@ -3,5 +3,6 @@ export const EMAIL_TEMPLATES = {
     PASSWORD_CHANGED: 'Haz cambiado tu contraseña exitosamente',
     ACTIVATE_ACCOUNT: 'Activación de cuenta',
     WELCOME: 'Bienvenido a GIAPP',
-    NEW_REQUEST: 'Nueva solicitud'
+    NEW_REQUEST: 'Nueva solicitud',
+    NEW_COMMENT: 'Nuevo comentario en {REPORT_CLIENT}'
 }

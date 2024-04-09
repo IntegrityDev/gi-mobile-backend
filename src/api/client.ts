@@ -149,4 +149,15 @@ export default function setupClientRoutes(app: any): void {
         }
       }
     );
+
+    app.get('/client-information/:identification', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { identification } = req.params;
+            const { data } = await service.GetByIdentification(identification);
+            return res.json(data);
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
 }

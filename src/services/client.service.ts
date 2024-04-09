@@ -62,6 +62,13 @@ class ClientService {
       throw error;
     }
   }
+  async GetByIdentification(identification: string) {
+    try {
+      return FormateData(await this.repository.GetByIdentification(identification));
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async GetEmployeesByClientId(id: number) {
     try {

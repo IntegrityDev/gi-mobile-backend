@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { CreateReport, CreateReportComment, Report, ReportComment } from '../models';
 import PrismaInstance from '../../utils/PrismaInstance';
+import reportEmitter from '../../events/report.events';
 
 class ReportRepository {
     private prismaInstance: PrismaInstance;
@@ -22,13 +23,18 @@ class ReportRepository {
                 if (!employee){
                     return null;
                 }
-                return await this.prisma.reports.create({
-                  data: {...report, employeeId: employee?.id},
+                const reportCreated = await this.prisma.reports.create({
+                  data: { ...report, employeeId: employee?.id },
                   include: {
                     clients: true,
                     employees: true,
                   },
-                });
+                }); 
+
+                if (reportCreated){
+                    reportEmitter.emit("report-created", reportCreated)
+                }
+                return reportCreated;
             }
             
             return null;
@@ -153,13 +159,15 @@ class ReportRepository {
             const employee = await this.prisma.employees.findFirst({
                 where: { identification }
             })
+
             if (employee) {
                 const clientEmployee = await this.prisma.clientEmployees.findFirst({
                   where: {
                     employeeId: employee.id,
+                    isActive: true
                   },
                 });
-                
+
                 if (clientEmployee) {
                     const client = await this.prisma.clients.findFirst({
                         where: {
@@ -251,11 +259,13 @@ class ReportRepository {
             })
 
             if (employee) {
-                const clientEmployee = await this.prisma.clientEmployees.findFirst({
-                  where: {
-                    employeeId: employee.id,
-                  },
-                });
+                const clientEmployee =
+                  await this.prisma.clientEmployees.findFirst({
+                    where: {
+                      employeeId: employee.id,
+                      isActive: true,
+                    },
+                  });
                 
                 if (clientEmployee) {
                     const client = await this.prisma.clients.findFirst({
@@ -315,8 +325,12 @@ class ReportRepository {
                 employees: true
               }
             });
+
+            if (userEntry) {
+                reportEmitter.emit("report-commented", userEntry);
+            }
+
             return userEntry;
-            
         } catch (error) {
             throw error;
         }

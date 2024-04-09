@@ -115,6 +115,18 @@ class ClientRepository {
     }
   }
 
+  async GetByIdentification(identification: string): Promise<Client | null> {
+    try {
+      return await this.prisma.clients.findFirst({
+        where: {
+          identification,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Delete(id: number, userId: number): Promise<Client | null> {
     try {
       const deleted = await this.prisma.clients.delete({

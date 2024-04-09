@@ -29,6 +29,17 @@ class NotificationRepository {
     }
   }
 
+  async CreateMany(data: any[]): Promise<boolean> {
+    try {
+      await this.prisma.notifications.createMany({
+        data: data,
+      });
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetTops(identification: string): Promise<Notification[]> {
     try {
       return await this.prisma.notifications.findMany({
