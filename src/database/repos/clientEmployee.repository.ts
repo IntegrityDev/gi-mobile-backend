@@ -25,26 +25,21 @@ class ClientEmployeeRepository {
       const existingClientEmployee =
         await this.prisma.clientEmployees.findFirst({
           where: {
-            clientId: clientEmployee.clientId,
+            // clientId: clientEmployee.clientId,
             employeeId: clientEmployee.employeeId,
             isActive: true,
           },
         });
 
       if (existingClientEmployee) {
-        const employee = await this.prisma.employees.findUnique({
+        await this.prisma.clientEmployees.update({
           where: {
-            id: existingClientEmployee.employeeId!,
+            id: existingClientEmployee.id,
+          },
+          data: {
+            isActive: false,
           },
         });
-        customError = {
-          created: false,
-          message: RESPONSE_MESSAGES.EMPLOYEE_ALREADY_ASSIGNED.replace(
-            "{identification}",
-            employee?.identification || ""
-          ),
-        };
-        return customError;
       }
 
       const newClient = await this.prisma.clientEmployees.create({
@@ -75,6 +70,31 @@ class ClientEmployeeRepository {
         });
         const clientEmployee = { ...existsClientEmployee, client: client };
         return clientEmployee;
+      }
+
+      return null;
+    } catch (error) {
+      throw error;
+    } finally {
+      this.prisma.$disconnect();
+    }
+  }
+
+  async GetByEmployeeIdAndClientId(
+    employeeId: number,
+    clientId: number
+  ): Promise<ClientEmployee | null | any> {
+    try {
+      if (employeeId && clientId) {
+        const existsClientEmployee =
+          await this.prisma.clientEmployees.findFirst({
+            where: {
+              employeeId,
+              clientId,
+              isActive: true,
+            },
+          });
+        return existsClientEmployee;
       }
 
       return null;
@@ -139,6 +159,23 @@ class ClientEmployeeRepository {
         return deleted;
       }
       return null;
+    } catch (error) {
+      throw error;
+    } finally {
+      this.prisma.$disconnect();
+    }
+  }
+
+  async UnAssignEmployee(id: number): Promise<ClientEmployee | null | any> {
+    try {
+      return await this.prisma.clientEmployees.update({
+        where: {
+          id,
+        },
+        data: {
+          isActive: false,
+        },
+      });
     } catch (error) {
       throw error;
     } finally {

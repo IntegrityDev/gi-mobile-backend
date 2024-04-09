@@ -103,8 +103,18 @@ export default function setupReportRoutes(app: any): void {
 
     app.get('/own-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            const { id: userId } = req.user;
-            const { data } = await service.GetAllOwnReports(userId);
+          const { id: userId } = req.user;
+          const { data } = await service.GetAllOwnReports(userId);
+          return res.json(data);
+        } catch (error) {
+          next(error);
+        }
+    });
+
+    app.get('/reports-client/:clientId', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { clientId } = req.params;
+            const { data } = await service.GetTop10ClientReports(+clientId);
             return res.json(data);
         } catch (error) {
             next(error);

@@ -95,6 +95,7 @@ class ClientService {
           createdBy: userId,
           isActive: true,
         };
+
         const entityCreated = await clientEmployeeRepo.Create(clientEmployee);
         results.push(entityCreated);
       }
@@ -105,8 +106,6 @@ class ClientService {
         }
       }
 
-
-
       return FormateData({
         results,
         message: !errors
@@ -116,6 +115,24 @@ class ClientService {
           : RESPONSE_MESSAGES.EMPLOYEES_ASSIGNED_WITH_ERRORS,
         statusCode: STATUS_CODES.OK,
       });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async UnAssignEmployee(
+    clientId: number,
+    employeeId: number,
+  ) {
+    try {
+      const clientEmployeeRepo = new ClientEmployeeRepository();
+      const entityCreated = await clientEmployeeRepo.GetByEmployeeIdAndClientId(employeeId, clientId);
+      if (entityCreated) {
+        return FormateData(
+          await clientEmployeeRepo.UnAssignEmployee(entityCreated.id)
+        );
+      }
+      return FormateData({})
     } catch (error) {
       throw error;
     }

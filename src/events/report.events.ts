@@ -1,7 +1,8 @@
 import { EventEmitter } from 'events';
+import { Report } from '../database/models';
 const reportEmitter = new EventEmitter();
 
-reportEmitter.on("report-created",async () => {
+reportEmitter.on("report-created",async (report: Report) => {
     
 });
 

@@ -64,6 +64,7 @@ model employees {
   phone            String             @db.VarChar(150)
   cellphone        String             @db.VarChar(80)
   isActive         Boolean
+  isSupervisor     Boolean?
   imageUrl         String?            @db.VarChar(500)
   createdAt        DateTime           @default(now()) @db.Date
   createdBy        Int

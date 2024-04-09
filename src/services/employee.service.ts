@@ -43,8 +43,7 @@ class EmployeeService {
                 isSuperAdmin,
                 isAdmin,
                 isClient,
-              } = user;
-  
+              } = user;   
               if (isSuperAdmin || isSupervisor || isAdmin) {
                 return FormateData(await this.repository.GetAll());
               } else if (isClient) {

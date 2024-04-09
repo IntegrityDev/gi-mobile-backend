@@ -15,6 +15,7 @@ export interface Employee {
     modifiedAt?: Date | null;
     modifiedBy?: number | null;
     isActive: boolean;
+    isSupervisor?: boolean | null;
     client?: Client | null;
   }
   

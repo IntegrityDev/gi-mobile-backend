@@ -106,18 +106,47 @@ export default function setupClientRoutes(app: any): void {
         }
     });
 
-    // app.delete('/employees/:id/client', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
-    //     try {
-    //         const { id } = req.params;
-    //         const { id: userId } = req.user as { id: string };
-    //         const { clientId } = req.body;
-    //         const { data } = await service.RemoveClient(+id!, clientId, +userId);
-    //         return res.json(data);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(STATUS_CODES.INTERNAL_ERROR).json({
-    //             message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD
-    //         });
-    //     }
-    // });
+    app.post('/client-unassign-employee', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { id: userId } = req.user as { id: string };
+            const { employeeId, clientId } = req.body;
+            const { data } = await service.UnAssignEmployee(
+              clientId,
+              employeeId
+            );
+            
+            return res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD
+            });
+        }
+    });
+
+    app.post(
+      "/client-assign-employee",
+      AuthMiddleware,
+      async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+          const { id } = req.params;
+          const { id: userId } = req.user as { id: string };
+          const { employeeId, clientId } = req.body;
+          const _employeeId = [employeeId];
+          const { data } = await service.AssignEmployees(
+            clientId,
+            _employeeId,
+            +userId
+          );
+ 
+          return res.json(data);
+        } catch (error) {
+          console.error(error);
+          res.status(STATUS_CODES.INTERNAL_ERROR).json({
+            message: RESPONSE_MESSAGES.ERROR_DELETING_RECORD,
+          });
+        }
+      }
+    );
 }

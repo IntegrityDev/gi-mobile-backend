@@ -55,12 +55,15 @@ class ReportRepository {
     async GetAll(): Promise<Report[]> {
         try {
             return await this.prisma.reports.findMany({
-                include: {
-                    laborAreas: true,
-                    clients: true,
-                    employees: true,
-                    reportPhotos: true
-                }
+              include: {
+                laborAreas: true,
+                clients: true,
+                employees: true,
+                reportPhotos: true,
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
             });
         } catch (error) {
             throw error;
@@ -79,9 +82,35 @@ class ReportRepository {
                 employees: true,
                 reportPhotos: true,
               },
+              orderBy: {
+                createdAt: "desc",
+              },
             });
         } catch (error) {
             throw error;
+        }
+    }
+
+    async GetTop10ForClient(clientId: number): Promise<Report[]> {
+        try {
+          const clientReports = await this.prisma.reports.findMany({
+            where: {
+              clientId: clientId,
+            },
+            include: {
+              laborAreas: true,
+              clients: true,
+              employees: true,
+              reportPhotos: true,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          });
+
+          return clientReports;
+        } catch (error) {
+          throw error;
         }
     }
 
@@ -109,8 +138,7 @@ class ReportRepository {
               },
               orderBy: {
                 createdAt: "desc",
-              },
-              take: 5,
+              }
             });
    
                return clientReports;

@@ -67,6 +67,14 @@ class ReportService {
     }
   }
 
+  async GetTop10ClientReports(clientId: number) {
+    try {
+      return FormateData(await this.repository.GetTop10ForClient(clientId));
+    } catch (error) {
+      throw error;
+    }
+  }
+  
   async GetLastFive(user: any) {
     try {
       let lastReports: Report[] = [];

@@ -88,6 +88,7 @@ class EmployeeRepository {
       return await this.prisma.employees.findMany({
         where: {
           isActive: true,
+          OR: [{ isSupervisor: false }, { isSupervisor: null }],
         },
       });
     } catch (error) {
@@ -106,9 +107,10 @@ class EmployeeRepository {
       if (employee) {
         const clientEmployee = await this.prisma.clientEmployees.findFirst({
           where: {
-            employeeId: employee.id
-          }
-        })
+            employeeId: employee.id,
+            isActive: true,
+          },
+        });
 
         if (clientEmployee) {
           client = await this.prisma.clients.findFirst({
@@ -177,10 +179,11 @@ class EmployeeRepository {
       const clientEmployee = await this.prisma.clientEmployees.findMany({
         where: {
           clientId,
+          isActive: true,
         },
         select: {
-          employeeId: true
-        }
+          employeeId: true,
+        },
       });
 
       if (clientEmployee) {
