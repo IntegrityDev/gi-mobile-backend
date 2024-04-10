@@ -47,9 +47,9 @@ class ClientService {
     }
   }
 
-  async GetAll() {
+  async GetAll(query: string) {
     try {
-      return FormateData(await this.repository.GetAll());
+      return FormateData(await this.repository.GetAll(query));
     } catch (error) {
       throw error;
     }

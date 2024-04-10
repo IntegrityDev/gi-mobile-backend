@@ -83,12 +83,24 @@ class EmployeeRepository {
     }
   }
 
-  async GetAll(): Promise<Employee[]> {
+  async GetAll(query: string): Promise<Employee[]> {
     try {
       return await this.prisma.employees.findMany({
         where: {
           isActive: true,
-          OR: [{ isSupervisor: false }, { isSupervisor: null }],
+          isSupervisor: false,
+          OR: [
+            {
+              firstName: {
+                contains: query,
+              },
+            },
+            {
+              lastName: {
+                contains: query,
+              },
+            },
+          ],
         },
       });
     } catch (error) {
@@ -151,6 +163,7 @@ class EmployeeRepository {
         const clientEmployee = await this.prisma.clientEmployees.findMany({
           where: {
             clientId: client.id,
+            isActive: true
           },
           select: {
             employeeId: true,

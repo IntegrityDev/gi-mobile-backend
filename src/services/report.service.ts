@@ -33,7 +33,7 @@ class ReportService {
     }
   }
 
-  async GetAll(user: any) {
+  async GetAll(user: any, status: string, filterDate: string, query: string | null) {
     try {
       let reports: Report[] = [];
       const {
@@ -47,11 +47,11 @@ class ReportService {
       } = user;
 
       if (isSuperAdmin || isSupervisor || isAdmin) {
-        reports = await this.repository.GetAll();
+        reports = await this.repository.GetAll(status, filterDate, query);
       } else if (isClient) {
-        reports = await this.repository.GetAllForClient(identification);
+        reports = await this.repository.GetAllForClient(identification, status, filterDate, query);
       } else if (isEmployee) {
-        reports = await this.repository.GetAllForEmployee(identification);
+        reports = await this.repository.GetAllForEmployee(identification, status, filterDate, query);
       }
       return FormateData(reports);
     } catch (error) {
@@ -74,7 +74,7 @@ class ReportService {
       throw error;
     }
   }
-  
+
   async GetLastFive(user: any) {
     try {
       let lastReports: Report[] = [];
@@ -134,6 +134,15 @@ class ReportService {
   async GetCommentsByReportId(id: number) {
     try {
       return FormateData(await this.repository.GetCommentsByReportId(id));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CompleteReport(reportId: number, userId: number) {
+    try {
+      const data = await this.repository.CompleteReport(reportId, userId);
+      return FormateData(data);
     } catch (error) {
       throw error;
     }

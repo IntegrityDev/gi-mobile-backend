@@ -82,11 +82,18 @@ class ClientRepository {
     }
   }
 
-  async GetAll(): Promise<Client[]> {
+  async GetAll(query: string): Promise<Client[]> {
     try {
       return await this.prisma.clients.findMany({
         where: {
           isActive: true,
+          OR: [
+            {
+              name: {
+                contains: query?.trim(),
+              },
+            },
+          ],
         },
       });
     } catch (error) {

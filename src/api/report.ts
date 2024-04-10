@@ -10,7 +10,8 @@ export default function setupReportRoutes(app: any): void {
     
     app.get('/reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            const { data } = await service.GetAll(req.user);
+            const { status: filterStatus, filterDate, query }: { status: string, filterDate: string, query: string | null } = req.query as { status: string, filterDate: string, query: string | null };
+            const { data } = await service.GetAll(req.user, filterStatus, filterDate, query);
             return res.json(data);
         } catch (error) {
             next(error);
@@ -118,6 +119,24 @@ export default function setupReportRoutes(app: any): void {
             return res.json(data);
         } catch (error) {
             next(error);
+        }
+    });
+    
+    app.post('/complete-report', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+
+            const { id: userId, identification } = req.user as { id: number, identification: string };
+            const {
+                reportId
+            } = req.body
+
+            const { data } = await service.CompleteReport(reportId, userId);
+            return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+        } catch (error) {
+            console.log(error)
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
         }
     });
 }

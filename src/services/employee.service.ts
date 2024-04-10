@@ -34,7 +34,7 @@ class EmployeeService {
         }
     }
 
-    async GetAll(user: any) {
+    async GetAll(user: any, query: string) {
         try {
             const {
                 identification,
@@ -44,8 +44,9 @@ class EmployeeService {
                 isAdmin,
                 isClient,
               } = user;   
+
               if (isSuperAdmin || isSupervisor || isAdmin) {
-                return FormateData(await this.repository.GetAll());
+                return FormateData(await this.repository.GetAll(query));
               } else if (isClient) {
                   return FormateData(
                     await this.repository.GetByClientIdentification(

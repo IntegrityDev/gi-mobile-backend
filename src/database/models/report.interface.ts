@@ -13,6 +13,7 @@ export interface Report {
     isDeleted: boolean;
     createdBy: number;
     client?: Client | null
+    isCompleted: boolean;
   }
   
   export interface CreateReport extends Omit<Report, 'id' | 'createdAt'> {}

@@ -56,6 +56,22 @@ class NotificationRepository {
     }
   }
 
+  async GetLast(identification: string): Promise<Notification | null> {
+    try {
+      return await this.prisma.notifications.findFirst({
+        where: {
+          identification,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetAll(identification: string): Promise<Notification[]> {
     try {
       return await this.prisma.notifications.findMany({

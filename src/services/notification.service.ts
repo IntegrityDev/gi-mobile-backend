@@ -24,6 +24,14 @@ class NotificationService {
     }
   }
 
+  async GetLast(identification: string) {
+    try {
+      return FormateData(await this.repository.GetLast(identification));
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetById(id: number) {
     try {
       return FormateData(await this.repository.GetById(id));

@@ -199,6 +199,7 @@ model reports {
   news         String?        @db.VarChar(150)
   report       String         @db.Text
   employeeId   Int
+  isCompleted  Boolean
   isDeleted    Boolean
   createdBy    Int
   createdAt    DateTime       @default(now()) @db.Timestamp(0)
