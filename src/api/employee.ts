@@ -10,8 +10,19 @@ export default function setupEmployeeRoutes(app: any): void {
     
     app.get('/employees', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            const { query } = req.query as { query: string };
+            const { query } = req.query as { query: string | null };
             const { data } = await service.GetAll(req.user, query);
+            return res.json(data);
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
+
+    app.get('/supervisors', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { query } = req.query as { query: string | null };
+            const { data } = await service.GetAll(req.user, query, true);
             return res.json(data);
         } catch (error) {
             console.error("Error en el servidor:", error);
@@ -39,6 +50,17 @@ export default function setupEmployeeRoutes(app: any): void {
         try {
             const { id } = req.params;
             const { data } = await service.GetById(+id);
+            return res.json(data);
+        } catch (error) {
+            console.error("Error en el servidor:", error);
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
+
+    app.get('/supervisors/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { data } = await service.GetSupervisorById(+id);
             return res.json(data);
         } catch (error) {
             console.error("Error en el servidor:", error);

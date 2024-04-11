@@ -34,7 +34,7 @@ class EmployeeService {
         }
     }
 
-    async GetAll(user: any, query: string) {
+    async GetAll(user: any, query: string | null, supervisors = false) {
         try {
             const {
                 identification,
@@ -46,7 +46,7 @@ class EmployeeService {
               } = user;   
 
               if (isSuperAdmin || isSupervisor || isAdmin) {
-                return FormateData(await this.repository.GetAll(query));
+                return FormateData(await this.repository.GetAll(query, supervisors));
               } else if (isClient) {
                   return FormateData(
                     await this.repository.GetByClientIdentification(
@@ -63,6 +63,14 @@ class EmployeeService {
     async GetById(id: number) {
         try {
             return FormateData(await this.repository.GetById(id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async GetSupervisorById(id: number) {
+        try {
+            return FormateData(await this.repository.GetSupervisorById(id));
         } catch (error) {
             throw error;
         }

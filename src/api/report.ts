@@ -139,4 +139,19 @@ export default function setupReportRoutes(app: any): void {
             });
         }
     });
+
+    app.post('/comment-photo', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id: userId, identification, name } = req.user as { id: number, identification: string, name: string };
+            const { reportPhotoId, comments, commentDate} = req.body;
+            const _newComments = `${name}, ${commentDate}{NEW_LINE}${comments}`;
+            const { data } = await service.CommentReportPhoto(reportPhotoId, _newComments, userId);
+            return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+        } catch (error) {
+            console.log(error)
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
 }

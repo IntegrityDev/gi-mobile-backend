@@ -2,8 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateReport,
   CreateReportComment,
+  CreateReportCommentPhoto,
   Report,
   ReportComment,
+  ReportCommentPhoto,
+  ReportPhoto,
 } from "../models";
 import PrismaInstance from "../../utils/PrismaInstance";
 import reportEmitter from "../../events/report.events";
@@ -224,6 +227,9 @@ class ReportRepository {
   async GetLastFive(): Promise<Report[]> {
     try {
       return await this.prisma.reports.findMany({
+        where: {
+          isCompleted: false
+        },
         include: {
           laborAreas: true,
           reportPhotos: true,
@@ -252,6 +258,7 @@ class ReportRepository {
       const clientReports = await this.prisma.reports.findMany({
         where: {
           clientId: client.id,
+          isCompleted: false
         },
         include: {
           laborAreas: true,
@@ -297,6 +304,7 @@ class ReportRepository {
           const clientReports = await this.prisma.reports.findMany({
             where: {
               clientId: client.id,
+              isCompleted: false
             },
             include: {
               laborAreas: true,
@@ -355,6 +363,20 @@ class ReportRepository {
     }
   }
 
+  async CreateReportCommentPhoto(
+    report: CreateReportCommentPhoto
+  ): Promise<ReportCommentPhoto | null> {
+    try {
+      const userEntry = await this.prisma.reportCommentPhotos.create({
+        data: report
+      });
+
+      return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetCommentsByReportId(id: number): Promise<ReportComment[] | null> {
     try {
       return await this.prisma.reportComments.findMany({
@@ -363,6 +385,7 @@ class ReportRepository {
         },
         include: {
           employees: true,
+          reportCommentPhotos: true
         },
       });
     } catch (error) {
@@ -394,6 +417,27 @@ class ReportRepository {
         },
         data: {
           isCompleted: true,
+          modifiedBy: userId,
+          modifiedAt: new Date(),
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CommentPhoto(
+    reportPhotoId: number,
+    comments: string,
+    userId: number
+  ): Promise<ReportPhoto | null> {
+    try {
+      return await this.prisma.reportPhotos.update({
+        where: {
+          id: reportPhotoId,
+        },
+        data: {
+          comments,
           modifiedBy: userId,
           modifiedAt: new Date(),
         },

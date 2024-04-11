@@ -83,25 +83,28 @@ class EmployeeRepository {
     }
   }
 
-  async GetAll(query: string): Promise<Employee[]> {
+  async GetAll(query: string | null, supervisors = false): Promise<Employee[]> {
     try {
+      let whereCondition: any = {
+        isActive: true,
+        isSupervisor: supervisors,
+      };
+      if (query !== "null" && query !== "undefined") {
+        whereCondition.OR = [
+          {
+            firstName: {
+              contains: query!,
+            },
+          },
+          {
+            lastName: {
+              contains: query!,
+            },
+          },
+        ];
+      }
       return await this.prisma.employees.findMany({
-        where: {
-          isActive: true,
-          isSupervisor: false,
-          OR: [
-            {
-              firstName: {
-                contains: query,
-              },
-            },
-            {
-              lastName: {
-                contains: query,
-              },
-            },
-          ],
-        },
+        where: whereCondition
       });
     } catch (error) {
       throw error;
@@ -134,6 +137,20 @@ class EmployeeRepository {
       }
       
       return {...employee, client } as Employee;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetSupervisorById(id: number): Promise<Employee | null> {
+    try {
+      let client: Client | null = null;
+      const employee = await this.prisma.employees.findFirst({
+        where: {
+          id,
+        },
+      });
+      return employee
     } catch (error) {
       throw error;
     }

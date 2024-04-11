@@ -9,7 +9,7 @@ import { DocumentType } from "./documentType.interface";
 import { EmployeeRequestComment } from "./employeeRequestComment";
 import { EmployeeRequest, CreateEmployeeRequest } from "./employeeRequest.interface";
 import { Employee, CreateEmployee, UpdateEmployee } from "./employee.interface";
-import { ReportCommentPhoto } from "./reportCommentPhoto.interface";
+import { ReportCommentPhoto, CreateReportCommentPhoto } from "./reportCommentPhoto.interface";
 import { ReportComment, CreateReportComment } from "./reportComment.interface";
 import { ReportPhoto, CreateReportPhoto, UpdateReportPhoto } from "./reportPhoto.interface";
 import { Report, CreateReport, UpdateReport } from "./report.interface";
@@ -57,5 +57,6 @@ export {
     CustomError,
     ClientEmployee,
     LaborArea,
-    Notification
+    Notification,
+    CreateReportCommentPhoto
 }

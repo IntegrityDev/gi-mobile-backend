@@ -122,7 +122,7 @@ export default function setupUserRoutes(app: any): void {
         upload.array("images"),
         async (req: CustomRequest, res: Response, next: NextFunction) => {
           try {
-            const {identification, isEmployee} = req.body;
+            const { identification, isEmployee } = req.body
             const uploadPromises: any[] = [];
             const tempFilesCreated: string[] = [];
             const options = { folder: "profiles"}
@@ -186,7 +186,8 @@ export default function setupUserRoutes(app: any): void {
                 fs.unlinkSync(file);
               });
 
-            if (isEmployee) {
+            if (isEmployee === "true") {
+                console.log("hola")
                 const employeeService = new EmployeeService();
                 const {data: employee} = await employeeService.GetByIdentification(identification);
                 const { data } = await employeeService.Update(
@@ -200,7 +201,9 @@ export default function setupUserRoutes(app: any): void {
                   });
             } else {
                 const clientService = new ClientService();
+                console.log(identification)
                 const {data: client} = await clientService.GetByIdentification(identification);
+                console.log(client)
                 const { data } = await clientService.Update(
                   client.id,
                   { imageUrl: reportPhotos[0]?.secureUrl },

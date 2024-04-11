@@ -1,4 +1,4 @@
-import { CreateReport, CreateReportComment, Report } from "../database/models";
+import { CreateReport, CreateReportComment, CreateReportCommentPhoto, Report } from "../database/models";
 import { ReportRepository } from "../database/repos";
 import { FormateData } from "../utils";
 import { PrismaClient } from '@prisma/client';
@@ -125,6 +125,24 @@ class ReportService {
   async CreateReportComment(entry: CreateReportComment) {
     try {
       const entityCreated = await this.repository.CreateReportComment(entry);
+      return FormateData(entityCreated);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CommentReportPhoto(reportPhotoId: number, comments: string, userId: number) {
+    try {
+      const entityCreated = await this.repository.CommentPhoto(reportPhotoId, comments, userId);
+      return FormateData(entityCreated);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CreateReportCommentPhoto(entry: CreateReportCommentPhoto) {
+    try {
+      const entityCreated = await this.repository.CreateReportCommentPhoto(entry);
       return FormateData(entityCreated);
     } catch (error) {
       throw error;

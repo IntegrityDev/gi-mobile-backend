@@ -150,27 +150,31 @@ model employeeRequests {
 }
 
 model reportCommentPhotos {
-  id              Int      @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   reportCommentId Int
-  imageUrl        String   @db.VarChar(500)
-  createdAt       DateTime @default(now()) @db.Date
+  imageUrl        String         @db.VarChar(500)
+  createdAt       DateTime       @default(now()) @db.Date
   createdBy       Int
   modifiedBy      Int?
   modifiedAt      Int?
   isDeleted       Boolean
+  reportComments  reportComments @relation(fields: [reportCommentId], references: [id], onUpdate: Restrict, map: "fk_comment_photo")
+
+  @@index([reportCommentId], map: "fk_comment_photo")
 }
 
 model reportComments {
-  id         Int       @id @default(autoincrement())
-  reportId   Int
-  employeeId String    @db.VarChar(20)
-  comments   String    @db.Text
-  createdBy  Int
-  createdAt  DateTime  @default(now()) @db.Timestamp(0)
-  isDeleted  Boolean   @default(false)
-  modifiedBy Int?
-  modifiedAt DateTime? @db.Timestamp(0)
-  employees  employees @relation(fields: [employeeId], references: [identification], onUpdate: Restrict, map: "fk_comm_employee")
+  id                  Int                   @id @default(autoincrement())
+  reportId            Int
+  employeeId          String                @db.VarChar(20)
+  comments            String                @db.Text
+  createdBy           Int
+  createdAt           DateTime              @default(now()) @db.Timestamp(0)
+  isDeleted           Boolean               @default(false)
+  modifiedBy          Int?
+  modifiedAt          DateTime?             @db.Timestamp(0)
+  reportCommentPhotos reportCommentPhotos[]
+  employees           employees             @relation(fields: [employeeId], references: [identification], onUpdate: Restrict, map: "fk_comm_employee")
 
   @@index([employeeId], map: "fk_comments_employee")
 }
@@ -182,6 +186,7 @@ model reportPhotos {
   url        String    @db.VarChar(500)
   secureUrl  String    @db.VarChar(500)
   imageUrl   String    @db.VarChar(500)
+  comments   String?   @db.VarChar(150)
   isDeleted  Boolean
   createdAt  DateTime  @default(now()) @db.Date
   createdBy  Int

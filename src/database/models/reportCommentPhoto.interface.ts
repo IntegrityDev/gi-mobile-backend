@@ -6,5 +6,7 @@ export interface ReportCommentPhoto {
     modifiedAt?: number | null;
     modifiedBy?: number | null;
     reportCommentId: number;
+    createdAt: Date
   }
   
+  export interface CreateReportCommentPhoto extends Omit<ReportCommentPhoto, 'id' | 'createdAt'> {}
