@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@onesignal/node-onesignal": "^2.0.1-beta2",
     "@prisma/client": "5.11.0",
     "@sendgrid/mail": "^8.1.3",
     "bcryptjs": "^2.4.3",
