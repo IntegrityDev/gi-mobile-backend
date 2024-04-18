@@ -29,6 +29,7 @@ model users {
   activationCode   String    @db.VarChar(10)
   activationDate   DateTime  @default(now()) @db.Timestamp(0)
   salt             String    @db.VarChar(300)
+  expoToken        String?   @db.VarChar(200)
   createdAt        DateTime  @default(now()) @db.Date
   createdBy        Int?
   modifiedAt       DateTime? @db.Date
@@ -186,7 +187,7 @@ model reportPhotos {
   url        String    @db.VarChar(500)
   secureUrl  String    @db.VarChar(500)
   imageUrl   String    @db.VarChar(500)
-  comments   String?   @db.VarChar(150)
+  comments   String?   @db.VarChar(250)
   isDeleted  Boolean
   createdAt  DateTime  @default(now()) @db.Date
   createdBy  Int

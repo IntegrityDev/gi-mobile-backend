@@ -15,11 +15,12 @@ export interface User {
   firstName?: string | null;
   lastName?: string | null;
   imageUrl?: string | null;
-  activationCode: string
-  activationDate: Date
+  activationCode: string;
+  activationDate: Date;
+  expoToken?: string | null;
 }
 
-export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy'> {
+export interface CreateUser extends Omit<User, 'id' | 'createdAt' | 'createdBy' | 'expoToken'> {
   
 }
 

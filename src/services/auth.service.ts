@@ -20,6 +20,7 @@ interface UserInputs {
   id?: number;
   email?: string;
   name?: string;
+  expoToken?: string;
 }
 
 class AuthService {
@@ -30,7 +31,7 @@ class AuthService {
   }
 
   public async SignIn(userInputs: UserInputs): Promise<any> {
-    const { identificationId, password } = userInputs;
+    const { identificationId, password, expoToken } = userInputs;
 
     try {
       const existingUser: User | null =
@@ -85,6 +86,15 @@ class AuthService {
               });
             } else {
               isEmployee = true;
+            }
+
+            //ExpoToken of user, should be compare with coming expo token, if different then update
+            if (existingUser.expoToken !== expoToken) {
+              await this.repository.UpdateUser(
+                existingUser.id,
+                { expoToken: expoToken! },
+                existingUser.id
+              );
             }
 
             const token: string = await GenerateSignature({
@@ -532,9 +542,7 @@ class AuthService {
     }
   }
 
-  public async ResendActivationCode(
-    identification: string
-  ): Promise<any> {
+  public async ResendActivationCode(identification: string): Promise<any> {
     try {
       const verifyActivationCode =
         await this.repository.GetActivationCodeByIdentification(
@@ -552,10 +560,11 @@ class AuthService {
         const _now = Date.now();
         const activationCode: string = this.generateActivateCode();
 
-        const updateVerifyCodeAndDate = await this.repository.SetNewActivationCodeAndDate(
-          verifyActivationCode?.id,
-          activationCode
-        );
+        const updateVerifyCodeAndDate =
+          await this.repository.SetNewActivationCodeAndDate(
+            verifyActivationCode?.id,
+            activationCode
+          );
         if (updateVerifyCodeAndDate) {
           let userExists: Employee | Client | null =
             await this.repository.FindEmployeeByIdentification(identification);

@@ -81,7 +81,7 @@ export default function setupAuthRoutes(app: any): void {
 
     app.post('/auth/activate-user', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { identification, code } = req.body;
+            const { identification, code, expoToken } = req.body;
             const { data } = await service.VerifyActivationCode(
               identification,
               code
