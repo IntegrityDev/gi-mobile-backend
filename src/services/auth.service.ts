@@ -250,6 +250,29 @@ class AuthService {
     }
   }
 
+  public async SignOut(identification: string): Promise<any> {
+    try {
+      const existingUser: User | null =
+        await this.repository.FindUserByIdentification(identification);
+
+      if (existingUser) {
+        await this.repository.UpdateUser(
+          existingUser.id,
+          { expoToken: null },
+          existingUser.id
+        );
+      }
+
+      return FormateData({
+        signed: false,
+        message: null,
+        statusCode: STATUS_CODES.OK,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async ChangePassword(userInputs: UserInputs): Promise<any> {
     const { id, identificationId, password, newPassword } = userInputs;
     try {

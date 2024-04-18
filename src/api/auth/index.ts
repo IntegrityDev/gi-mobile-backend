@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../../services';
 import { RESPONSE_MESSAGES, STATUS_CODES } from '../../constants';
 import AuthMiddleware from '../middlewares/auth';
+import { CustomRequest } from '../../database/models';
 
 export default function setupAuthRoutes(app: any): void {
     const service = new AuthService();
@@ -20,6 +21,18 @@ export default function setupAuthRoutes(app: any): void {
     app.post('/auth/login', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.SignIn(req.body);
+            return res.status(data?.statusCode).json(data);
+        } catch (error) {
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
+
+    app.post('/auth/logout', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { identification } = req.user;
+            const { data } = await service.SignOut(identification);
             return res.status(data?.statusCode).json(data);
         } catch (error) {
             return res.status(STATUS_CODES.INTERNAL_ERROR).json({

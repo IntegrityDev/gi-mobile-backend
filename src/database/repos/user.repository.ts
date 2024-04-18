@@ -476,6 +476,28 @@ class UserRepository {
       throw error;
     }
   }
+
+  async GetExpoTokensByIdentifications(
+    identifications: string[]
+  ): Promise<any> {
+    try {
+      return this.prisma.users.findMany({
+        where: {
+          identificationId: {
+            in: identifications,
+          },
+          expoToken: {
+            not: null,
+          },
+        },
+        select: {
+          expoToken: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default UserRepository;

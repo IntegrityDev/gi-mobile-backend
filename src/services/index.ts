@@ -17,6 +17,7 @@ import UserProfileService from './userProfile.service';
 import LaborAreaService from './laborArea.service';
 import RequestService from './request.service';
 import NotificationService from './notification.service';
+import PushNotification from './pushNotification.service';
 
 export {
   UserService,
@@ -37,5 +38,6 @@ export {
   UserProfileService,
   LaborAreaService,
   RequestService,
-  NotificationService
+  NotificationService,
+  PushNotification
 };

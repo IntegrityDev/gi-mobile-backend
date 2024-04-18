@@ -6,14 +6,17 @@ import {
   EmployeeRepository,
   NotificationRepository,
   ReportRepository,
+  UserRepository,
 } from "../database/repos";
 import EmailService from "../services/email.service";
 import { EMAIL_TEMPLATES } from "../constants";
+import { PushNotification } from "../services";
 const reportEmitter = new EventEmitter();
 
 reportEmitter.on("report-created", async (report: any) => {
   const clientEmployeeRepo = new ClientEmployeeRepository();
   const notificationRepo = new NotificationRepository();
+  const userRepo = new UserRepository();
   const employees = await clientEmployeeRepo.GetEmployeesByClientId(
     report.clientId
   );
@@ -34,7 +37,43 @@ reportEmitter.on("report-created", async (report: any) => {
     });
 
     if (notifications) {
-      const saved = await notificationRepo.CreateMany(notifications);
+      try {
+        const saved = await notificationRepo.CreateMany(notifications);
+        if (saved) {
+          const emailService = new EmailService();
+          employees.map(async (employee) => {
+            try {
+              // await emailService.SendEmail({
+              //   title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
+              //     "{REPORT_CLIENT}",
+              //     name
+              //   ),
+              //   subject: title,
+              //   email: employee?.email!,
+              //   message: `<strong style="font-size: 26px;">${firstName} ${lastName}</strong> <p> ha creado un reporte en ${name}:</p>`,
+              // });
+            } catch (error) {
+              console.error("Error sending notification email", error);
+            }
+          });
+        }
+      } catch (error) {
+        console.log("Error creating notifications: " + error);
+      }
+    }
+
+    //Get expo tokens by identifications
+    const identifications = employees.map(
+      ({ identification }) => identification
+    );
+    
+    const expoTokens = await userRepo.GetExpoTokensByIdentifications(
+      identifications
+    );
+
+    if (expoTokens && expoTokens.length > 0) {
+      const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken) 
+      await PushNotification.sendPushNotifications(_tokens, `Nuevo reporte en ${name}`, message);
     }
   }
 });
