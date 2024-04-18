@@ -3,6 +3,7 @@ import { ClientRequest, EmployeeRequest } from '../database/models';
 import { NotificationRepository, UserProfileRepository, UserRepository } from '../database/repos';
 import EmailService from '../services/email.service';
 import { EMAIL_TEMPLATES } from '../constants';
+import { PushNotification } from '../services';
 const requestEmitter = new EventEmitter();
 
 requestEmitter.on("employee-request-created", async (employeeRequest: EmployeeRequest) => {
@@ -47,8 +48,25 @@ requestEmitter.on("employee-request-created", async (employeeRequest: EmployeeRe
                             );
                         }
                       }
+                      const identifications = [user.identificationId]
+  
+                      const expoTokens = await userRepository.GetExpoTokensByIdentifications(
+                        identifications
+                      );
+                  
+                      if (expoTokens && expoTokens.length > 0) {
+                        const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
+                        await PushNotification.sendPushNotifications(
+                          _tokens,
+                          title,
+                          message
+                        );
+                      }
+
                     }
                 });
+
+                
             }
         }
     }

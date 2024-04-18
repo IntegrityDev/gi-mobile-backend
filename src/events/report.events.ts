@@ -66,14 +66,18 @@ reportEmitter.on("report-created", async (report: any) => {
     const identifications = employees.map(
       ({ identification }) => identification
     );
-    
+
     const expoTokens = await userRepo.GetExpoTokensByIdentifications(
       identifications
     );
 
     if (expoTokens && expoTokens.length > 0) {
-      const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken) 
-      await PushNotification.sendPushNotifications(_tokens, `Nuevo reporte en ${name}`, message);
+      const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
+      await PushNotification.sendPushNotifications(
+        _tokens,
+        `Nuevo reporte en ${name}`,
+        message
+      );
     }
   }
 });
@@ -85,6 +89,7 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
   const clientEmployeeRepo = new ClientEmployeeRepository();
   const employeeRepo = new EmployeeRepository();
   const notificationRepo = new NotificationRepository();
+  const userRepo = new UserRepository();
 
   const report = await reportRepo.GetById(reportComment.reportId);
   if (report) {
@@ -133,6 +138,26 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
             });
           }
         }
+
+        //Get expo tokens by identifications
+        const identifications = employees.map(
+          ({ identification }) => identification
+        );
+
+        const expoTokens = await userRepo.GetExpoTokensByIdentifications(
+          identifications
+        );
+
+        if (expoTokens && expoTokens.length > 0) {
+          const _tokens = expoTokens.map(
+            (expoToken: any) => expoToken.expoToken
+          );
+          await PushNotification.sendPushNotifications(
+            _tokens,
+            title,
+            message
+          );
+        }
       }
     } else {
       const { firstName, lastName } = reportComment?.employees;
@@ -147,7 +172,7 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
       );
       try {
         const emailService = new EmailService();
-        const senderEmail = await emailService.SendEmail({
+        await emailService.SendEmail({
           title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
             "{REPORT_CLIENT}",
             clientName
@@ -158,6 +183,17 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
         });
       } catch (error) {
         console.error("Error sending notification email", error);
+      }
+
+      const identifications = [employee?.identification!]
+  
+      const expoTokens = await userRepo.GetExpoTokensByIdentifications(
+        identifications
+      );
+  
+      if (expoTokens && expoTokens.length > 0) {
+        const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
+        await PushNotification.sendPushNotifications(_tokens, title, message);
       }
     }
   }
