@@ -21,8 +21,7 @@ class PushNotification {
       const chunks = PushNotification.expo.chunkPushNotifications(messages);
       await Promise.all(chunks.map(async (chunk) => {
         try {
-        const result = await PushNotification.expo.sendPushNotificationsAsync(chunk);
-        console.log(result)
+        await PushNotification.expo.sendPushNotificationsAsync(chunk);
           console.log("Notificación push enviada con éxito.");
         } catch (error) {
           console.error("Error al enviar la notificación push:", error);

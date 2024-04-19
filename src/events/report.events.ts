@@ -43,15 +43,15 @@ reportEmitter.on("report-created", async (report: any) => {
           const emailService = new EmailService();
           employees.map(async (employee) => {
             try {
-              // await emailService.SendEmail({
-              //   title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
-              //     "{REPORT_CLIENT}",
-              //     name
-              //   ),
-              //   subject: title,
-              //   email: employee?.email!,
-              //   message: `<strong style="font-size: 26px;">${firstName} ${lastName}</strong> <p> ha creado un reporte en ${name}:</p>`,
-              // });
+              await emailService.SendEmail({
+                title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
+                  "{REPORT_CLIENT}",
+                  name
+                ),
+                subject: title,
+                email: employee?.email!,
+                message: `<strong style="font-size: 26px;">${firstName} ${lastName}</strong> <p> ha creado un reporte en ${name}:</p>`,
+              });
             } catch (error) {
               console.error("Error sending notification email", error);
             }
@@ -73,6 +73,7 @@ reportEmitter.on("report-created", async (report: any) => {
 
     if (expoTokens && expoTokens.length > 0) {
       const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
+      console.log(_tokens)
       await PushNotification.sendPushNotifications(
         _tokens,
         `Nuevo reporte en ${name}`,
