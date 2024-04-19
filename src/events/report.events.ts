@@ -43,15 +43,15 @@ reportEmitter.on("report-created", async (report: any) => {
           const emailService = new EmailService();
           employees.map(async (employee) => {
             try {
-              await emailService.SendEmail({
-                title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
-                  "{REPORT_CLIENT}",
-                  name
-                ),
-                subject: title,
-                email: employee?.email!,
-                message: `<strong style="font-size: 26px;">${firstName} ${lastName}</strong> <p> ha creado un reporte en ${name}:</p>`,
-              });
+              // await emailService.SendEmail({
+              //   title: EMAIL_TEMPLATES.NEW_COMMENT.replace(
+              //     "{REPORT_CLIENT}",
+              //     name
+              //   ),
+              //   subject: title,
+              //   email: employee?.email!,
+              //   message: `<strong style="font-size: 26px;">${firstName} ${lastName}</strong> <p> ha creado un reporte en ${name}:</p>`,
+              // });
             } catch (error) {
               console.error("Error sending notification email", error);
             }
@@ -61,7 +61,7 @@ reportEmitter.on("report-created", async (report: any) => {
         console.log("Error creating notifications: " + error);
       }
     }
-
+    
     //Get expo tokens by identifications
     const identifications = employees.map(
       ({ identification }) => identification

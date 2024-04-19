@@ -41,6 +41,19 @@ export default function setupAuthRoutes(app: any): void {
         }
     });
 
+    app.post('/auth/expo-token', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+            const { identification } = req.user;
+            const {expoToken} = req.body;
+            const { data } = await service.ExpoToken(identification, expoToken);
+            return res.status(data?.statusCode).json(data);
+        } catch (error) {
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
+
     app.post('/auth/reset-password', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.ResetPassword(req.body);

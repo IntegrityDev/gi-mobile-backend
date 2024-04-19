@@ -31,7 +31,7 @@ class AuthService {
   }
 
   public async SignIn(userInputs: UserInputs): Promise<any> {
-    const { identificationId, password, expoToken } = userInputs;
+    const { identificationId, password } = userInputs;
 
     try {
       const existingUser: User | null =
@@ -86,15 +86,6 @@ class AuthService {
               });
             } else {
               isEmployee = true;
-            }
-
-            //ExpoToken of user, should be compare with coming expo token, if different then update
-            if (existingUser.expoToken !== expoToken) {
-              await this.repository.UpdateUser(
-                existingUser.id,
-                { expoToken: expoToken! },
-                existingUser.id
-              );
             }
 
             const token: string = await GenerateSignature({
@@ -259,6 +250,29 @@ class AuthService {
         await this.repository.UpdateUser(
           existingUser.id,
           { expoToken: null },
+          existingUser.id
+        );
+      }
+
+      return FormateData({
+        signed: false,
+        message: null,
+        statusCode: STATUS_CODES.OK,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async ExpoToken(identification: string, expoToken: string): Promise<any> {
+    try {
+      const existingUser: User | null =
+        await this.repository.FindUserByIdentification(identification);
+
+      if (existingUser) {
+        await this.repository.UpdateUser(
+          existingUser.id,
+          { expoToken },
           existingUser.id
         );
       }
