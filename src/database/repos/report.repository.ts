@@ -335,6 +335,8 @@ class ReportRepository {
         },
         include: {
           laborAreas: true,
+          clients: true,
+          employees: true
         },
       });
     } catch (error) {
