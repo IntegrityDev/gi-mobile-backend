@@ -3,6 +3,7 @@ export interface Announcement {
   createdAt: Date;
   imageUrl: string;
   forPublic: string;
+  publicId: string;
 }
   
   export interface CreateAnnouncement extends Omit<Announcement, 'id' | 'createdAt'> {
