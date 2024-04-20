@@ -23,7 +23,11 @@ class AnnouncementRepository {
 
   async GetAll(): Promise<Announcement[]> {
     try {
-      return await this.prisma.announcements.findMany();
+      return await this.prisma.announcements.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
     } catch (error) {
       throw error;
     }
