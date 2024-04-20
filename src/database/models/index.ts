@@ -19,6 +19,7 @@ import { CustomError } from "./customError.interface";
 import { ClientEmployee, CreateClientEmployee } from "./clientEmployee.interface";
 import { LaborArea } from "./laborArea.interface";
 import { Notification } from "./notification.interface";
+import { Announcement, CreateAnnouncement } from "./announcement.interface";
 
 export {
     CustomRequest,
@@ -58,5 +59,7 @@ export {
     ClientEmployee,
     LaborArea,
     Notification,
-    CreateReportCommentPhoto
+    CreateReportCommentPhoto,
+    Announcement,
+    CreateAnnouncement
 }

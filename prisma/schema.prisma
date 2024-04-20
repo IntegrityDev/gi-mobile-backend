@@ -288,3 +288,10 @@ model notifications {
   objectId       Int
   screen         String   @db.VarChar(100)
 }
+
+model announcements {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  imageUrl  String   @db.VarChar(500)
+  forPublic String   @db.VarChar(50)
+}

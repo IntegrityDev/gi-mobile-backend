@@ -18,6 +18,7 @@ import LaborAreaService from './laborArea.service';
 import RequestService from './request.service';
 import NotificationService from './notification.service';
 import PushNotification from './pushNotification.service';
+import AnnouncementService from './announcement.service';
 
 export {
   UserService,
@@ -39,5 +40,6 @@ export {
   LaborAreaService,
   RequestService,
   NotificationService,
-  PushNotification
+  PushNotification,
+  AnnouncementService
 };

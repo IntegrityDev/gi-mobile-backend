@@ -16,6 +16,7 @@ import VisitRepository from "./visit.repository";
 import ClientEmployeeRepository from "./clientEmployee.repository";
 import LaborAreaRepository from "./laborArea.repository";
 import NotificationRepository from "./notification.repository";
+import AnnouncementRepository from "./announcement.repository";
 
 export {
     UserRepository,
@@ -35,5 +36,6 @@ export {
     VisitRepository,
     ClientEmployeeRepository,
     LaborAreaRepository,
-    NotificationRepository
+    NotificationRepository,
+    AnnouncementRepository
 }
