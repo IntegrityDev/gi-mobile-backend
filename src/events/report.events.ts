@@ -73,7 +73,6 @@ reportEmitter.on("report-created", async (report: any) => {
 
     if (expoTokens && expoTokens.length > 0) {
       const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
-      console.log(_tokens)
       await PushNotification.sendPushNotifications(
         _tokens,
         `Nuevo reporte en ${name}`,
@@ -150,12 +149,13 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
         );
 
         if (expoTokens && expoTokens.length > 0) {
+          
           const _tokens = expoTokens.map(
             (expoToken: any) => expoToken.expoToken
           );
           await PushNotification.sendPushNotifications(
             _tokens,
-            title,
+            "Nuevo comentario",
             message
           );
         }
@@ -194,7 +194,7 @@ reportEmitter.on("report-commented", async (reportComment: any) => {
   
       if (expoTokens && expoTokens.length > 0) {
         const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
-        await PushNotification.sendPushNotifications(_tokens, title, message);
+        await PushNotification.sendPushNotifications(_tokens, "Nuevo comentario", message);
       }
     }
   }
