@@ -102,6 +102,16 @@ export default function setupReportRoutes(app: any): void {
         }
     });
 
+    app.delete('/reports-photo/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { data } = await service.DeletePhotoReportById(+id);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
+
     app.get('/own-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
           const { id: userId } = req.user;

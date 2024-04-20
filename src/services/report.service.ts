@@ -157,6 +157,14 @@ class ReportService {
     }
   }
 
+  async DeletePhotoReportById(id: number) {
+    try {
+      return FormateData(await this.repository.DeletePhotoReportById(id));
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async CompleteReport(reportId: number, userId: number) {
     try {
       const data = await this.repository.CompleteReport(reportId, userId);

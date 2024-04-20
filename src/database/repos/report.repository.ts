@@ -395,6 +395,18 @@ class ReportRepository {
     }
   }
 
+  async DeletePhotoReportById(id: number): Promise<ReportPhoto | null> {
+    try {
+      return await this.prisma.reportPhotos.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Delete(id: number, userId: number): Promise<Report | null> {
     try {
       const deleted = await this.prisma.reports.delete({

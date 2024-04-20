@@ -54,6 +54,9 @@ class ReportPhotoRepository {
         where: {
           reportId: id,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
     } catch (error) {
       throw error;
