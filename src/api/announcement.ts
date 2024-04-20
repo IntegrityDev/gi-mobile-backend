@@ -131,7 +131,16 @@ export default function setupAnnouncementRoutes(app: any): void {
 
     app.delete('/announcements/:id', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
-            const { data } = await service.GetAll();
+            const { id } = req.params;
+
+            if (!id || isNaN(+id)) {
+                return res.status(STATUS_CODES.BAD_REQUEST).json({
+                    message: 'Announcement ID is invalid or missing.'
+                });
+            }
+
+            const { id: userId } = req.user as { id: number };
+            const { data } = await service.Delete(+id, userId);
             return res.json(data);
         } catch (error) {
             console.error("Error en el servidor:", error);
