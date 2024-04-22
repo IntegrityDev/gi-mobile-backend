@@ -11,6 +11,7 @@ import {
   setupReportPhotoRoutes,
   setupReportRoutes,
   setupRequestsRoutes,
+  setupSummaryRoutes,
   setupUserRoutes,
   setupValidateFilesRoutes,
   setupVisitRoutes,
@@ -36,4 +37,5 @@ export default async function configureApp(app: Express): Promise<void> {
   setupNotificationRoutes(app);
   setupAnnouncementRoutes(app);
   setupValidateFilesRoutes(app);
+  setupSummaryRoutes(app)
 }

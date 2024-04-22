@@ -11,6 +11,7 @@ import setupRequestsRoutes from "./request";
 import setupNotificationRoutes from "./notification";
 import setupAnnouncementRoutes from "./announcement";
 import setupValidateFilesRoutes from "./validateFiles";
+import setupSummaryRoutes from "./summary";
 
 export {
   setupAuthRoutes,
@@ -25,5 +26,6 @@ export {
   setupRequestsRoutes,
   setupNotificationRoutes,
   setupAnnouncementRoutes,
-  setupValidateFilesRoutes
+  setupValidateFilesRoutes,
+  setupSummaryRoutes
 };

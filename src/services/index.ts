@@ -19,6 +19,7 @@ import RequestService from './request.service';
 import NotificationService from './notification.service';
 import PushNotification from './pushNotification.service';
 import AnnouncementService from './announcement.service';
+import SummaryService from './summary.service';
 
 export {
   UserService,
@@ -41,5 +42,6 @@ export {
   RequestService,
   NotificationService,
   PushNotification,
-  AnnouncementService
+  AnnouncementService,
+  SummaryService
 };
