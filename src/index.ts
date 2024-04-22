@@ -20,9 +20,10 @@ import expressApp from "./express-app";
 const StartServer = async (): Promise<void> => {
   const app = express();
   await expressApp(app);
+  const port = process.env.PORT ? parseInt(process.env.PORT) : PORT;
   app
-    .listen(PORT, () => {
-      console.log(`listening to port ${PORT}`);
+    .listen(port, () => {
+      console.log(`listening to port ${port}`);
     })
     .on("error", (err: any) => {
       console.log(err);
