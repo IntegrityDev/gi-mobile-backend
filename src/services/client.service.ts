@@ -24,11 +24,20 @@ class ClientService {
           statusCode: STATUS_CODES.BAD_REQUEST,
         });
       }
-      return FormateData(entityCreated);
+      return FormateData({...entityCreated, created: true, message: "Cliente creado correctamente"});
     } catch (error) {
       throw error;
     }
   }
+
+  async CreateBatch(entry: CreateClient[]) {     
+    try {
+        const entityCreated = await this.repository.CreateMany(entry);
+        return FormateData(entityCreated);
+    } catch (error) {
+        throw error;
+    }
+}
 
   async Update(
     id: number,
@@ -77,6 +86,14 @@ class ClientService {
       throw error;
     }
   }
+
+  async ValidateClient(identification: string) {
+    try {
+        return FormateData(await this.repository.GetByIdentification(identification));
+    } catch (error) {
+        throw error;
+    }
+}
 
   async Delete(id: number, userId: number) {
     try {

@@ -60,6 +60,19 @@ class ClientRepository {
     }
   }
 
+  async CreateMany(
+    clients: CreateClient[]
+  ): Promise<number> {
+    try {
+      const userEntry = await this.prisma.clients.createMany({
+        data: clients
+      });
+      return userEntry?.count;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Update(
     id: number,
     dataToUpdate: Partial<UpdateClient>,

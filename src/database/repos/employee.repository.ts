@@ -61,22 +61,35 @@ class EmployeeRepository {
     }
   }
 
+  async CreateMany(
+    employees: CreateEmployee[]
+  ): Promise<number> {
+    try {
+      const userEntry = await this.prisma.employees.createMany({
+        data: employees
+      });
+      return userEntry?.count;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Update(
     id: number,
     dataToUpdate: Partial<UpdateEmployee>,
     userId: number
   ): Promise<Employee | null> {
     try {
-        const updated = await this.prisma.employees.update({
-            where: {
-              id,
-            },
-            data: {
-                ...dataToUpdate,
-                modifiedAt: new Date(),
-                modifiedBy: userId
-            },
-          });
+      const updated = await this.prisma.employees.update({
+        where: {
+          id,
+        },
+        data: {
+          ...dataToUpdate,
+          modifiedAt: new Date(),
+          modifiedBy: userId,
+        },
+      });
       return updated;
     } catch (error) {
       throw error;
@@ -104,7 +117,7 @@ class EmployeeRepository {
         ];
       }
       return await this.prisma.employees.findMany({
-        where: whereCondition
+        where: whereCondition,
       });
     } catch (error) {
       throw error;
@@ -135,8 +148,8 @@ class EmployeeRepository {
           });
         }
       }
-      
-      return {...employee, client } as Employee;
+
+      return { ...employee, client } as Employee;
     } catch (error) {
       throw error;
     }
@@ -150,7 +163,7 @@ class EmployeeRepository {
           id,
         },
       });
-      return employee
+      return employee;
     } catch (error) {
       throw error;
     }
@@ -164,23 +177,39 @@ class EmployeeRepository {
           identification,
         },
       });
-      
-      return {...employee, client } as Employee;
+
+      return { ...employee, client } as Employee;
     } catch (error) {
       throw error;
     }
   }
 
-  async GetByClientIdentification(identification: string): Promise<Employee[] | null> {
+  async ValidateEmployee(identification: string): Promise<Employee | null> {
     try {
-      const client = await this.prisma.clients.findFirst({where:{
-        identification
-      }})
-      if (client){
+      return await this.prisma.employees.findFirst({
+        where: {
+          identification,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetByClientIdentification(
+    identification: string
+  ): Promise<Employee[] | null> {
+    try {
+      const client = await this.prisma.clients.findFirst({
+        where: {
+          identification,
+        },
+      });
+      if (client) {
         const clientEmployee = await this.prisma.clientEmployees.findMany({
           where: {
             clientId: client.id,
-            isActive: true
+            isActive: true,
           },
           select: {
             employeeId: true,
@@ -217,7 +246,7 @@ class EmployeeRepository {
       });
 
       if (clientEmployee) {
-        const _ids = clientEmployee.map((register) => register.employeeId)
+        const _ids = clientEmployee.map((register) => register.employeeId);
         return await this.prisma.employees.findMany({
           where: {
             id: {
@@ -241,7 +270,7 @@ class EmployeeRepository {
         },
       });
       return deleted;
-    } catch (error) { 
+    } catch (error) {
       throw error;
     }
   }

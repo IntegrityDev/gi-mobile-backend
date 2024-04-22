@@ -46,6 +46,22 @@ export default function setupEmployeeRoutes(app: any): void {
         }
     });
 
+    app.post('/supervisors', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+          const { id: createdBy } = req.user as { id: string };
+          const { data } = await service.Create({
+            ...req.body,
+            createdBy: createdBy,
+          });
+          return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+        } catch (error) {
+          console.error("Error en el servidor:", error);
+          return res
+            .status(STATUS_CODES.INTERNAL_ERROR)
+            .json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
+
     app.get('/employees/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;
@@ -153,6 +169,20 @@ export default function setupEmployeeRoutes(app: any): void {
         } catch (error) {
             console.error("Error en el servidor:", error);
             return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
+        }
+    });
+
+
+    app.post('/batch-employees', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+          const { id: createdBy } = req.user as { id: number };
+          const { data } = await service.CreateBatch(req.body);
+          return res.status(data?.statusCode || STATUS_CODES.OK).json(data);
+        } catch (error) {
+          console.error("Error en el servidor:", error);
+          return res
+            .status(STATUS_CODES.INTERNAL_ERROR)
+            .json({ message: RESPONSE_MESSAGES.ERROR_500 });
         }
     });
 }

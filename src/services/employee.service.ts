@@ -16,9 +16,23 @@ class EmployeeService {
             if ('created' in entityCreated && 'message' in entityCreated) {
                 return FormateData({
                     ...entityCreated,
-                    statusCode: STATUS_CODES.BAD_REQUEST
+                    created: false,
+                    statusCode: STATUS_CODES.OK
                 })
             }
+            return FormateData({
+              ...entityCreated,
+              created: true,
+              message: "Empleado creado correctamente",
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async CreateBatch(entry: CreateEmployee[]) {     
+        try {
+            const entityCreated = await this.repository.CreateMany(entry);
             return FormateData(entityCreated);
         } catch (error) {
             throw error;
@@ -79,6 +93,14 @@ class EmployeeService {
     async GetByIdentification(identification: string) {
         try {
             return FormateData(await this.repository.GetByIdentification(identification));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async ValidateEmployee(identification: string) {
+        try {
+            return FormateData(await this.repository.ValidateEmployee(identification));
         } catch (error) {
             throw error;
         }

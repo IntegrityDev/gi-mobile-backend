@@ -10,6 +10,7 @@ import setupReportPhotoRoutes from "./reportPhoto";
 import setupRequestsRoutes from "./request";
 import setupNotificationRoutes from "./notification";
 import setupAnnouncementRoutes from "./announcement";
+import setupValidateFilesRoutes from "./validateFiles";
 
 export {
   setupAuthRoutes,
@@ -23,5 +24,6 @@ export {
   setupReportPhotoRoutes,
   setupRequestsRoutes,
   setupNotificationRoutes,
-  setupAnnouncementRoutes
+  setupAnnouncementRoutes,
+  setupValidateFilesRoutes
 };
