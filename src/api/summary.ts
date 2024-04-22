@@ -19,6 +19,6 @@ export default function setupSummaryRoutes(app: any): void {
         } catch (error) {
             console.error("Error en el servidor:", error);
             return res.status(STATUS_CODES.INTERNAL_ERROR).json({ message: RESPONSE_MESSAGES.ERROR_500 });
-        }
+        } 
     });
 }
