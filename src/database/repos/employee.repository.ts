@@ -176,7 +176,23 @@ class EmployeeRepository {
         where: {
           identification,
         },
+        
       });
+
+      if (employee) {
+        const clientEmployee = await this.prisma.clientEmployees.findFirst({
+          where: {
+            employeeId: employee.id
+          },
+        });
+        if (clientEmployee) {
+          client = await this.prisma.clients.findUnique({
+            where: {
+              id: clientEmployee.id
+            }
+          })
+        }
+      }
 
       return { ...employee, client } as Employee;
     } catch (error) {

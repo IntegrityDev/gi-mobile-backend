@@ -91,6 +91,7 @@ class ReportService {
       if (isSuperAdmin || isSupervisor || isAdmin) {
         lastReports = await this.repository.GetLastFive();
       } else if (isClient) {
+        console.log("2")
         lastReports = await this.repository.GetLastFiveForClient(
           identification
         );

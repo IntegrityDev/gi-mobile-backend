@@ -282,7 +282,7 @@ class ReportRepository {
       const employee = await this.prisma.employees.findFirst({
         where: { identification },
       });
-
+      
       if (employee) {
         const clientEmployee = await this.prisma.clientEmployees.findFirst({
           where: {
@@ -290,14 +290,14 @@ class ReportRepository {
             isActive: true,
           },
         });
-
+        
         if (clientEmployee) {
           const client = await this.prisma.clients.findFirst({
             where: {
               id: clientEmployee.clientId,
             },
           });
-
+          
           if (!client) {
             return [];
           }
@@ -316,8 +316,7 @@ class ReportRepository {
             },
             take: 5,
           });
-
-          return clientReports;
+             return clientReports;
         }
       }
 
