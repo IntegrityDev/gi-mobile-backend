@@ -182,7 +182,8 @@ class EmployeeRepository {
       if (employee) {
         const clientEmployee = await this.prisma.clientEmployees.findFirst({
           where: {
-            employeeId: employee.id
+            employeeId: employee.id,
+            isActive: true,
           },
         });
         if (clientEmployee) {
