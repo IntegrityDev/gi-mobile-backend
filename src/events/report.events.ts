@@ -75,7 +75,7 @@ reportEmitter.on("report-created", async (report: any) => {
       const _tokens = expoTokens.map((expoToken: any) => expoToken.expoToken);
       await PushNotification.sendPushNotifications(
         _tokens,
-        `Nuevo reporte en ${name}`,
+        `Nuevo reporte`,
         message
       );
     }
