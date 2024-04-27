@@ -186,14 +186,15 @@ class EmployeeRepository {
             isActive: true,
           },
         });
+        
         if (clientEmployee) {
-          client = await this.prisma.clients.findUnique({
+          client = await this.prisma.clients.findFirst({
             where: {
-              id: clientEmployee.id,
+              id: clientEmployee.clientId,
               isActive: true,
             },
           });
-        }
+       }
       }
 
       return { ...employee, client } as Employee;
