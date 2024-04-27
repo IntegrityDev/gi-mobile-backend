@@ -62,7 +62,7 @@ export default function setupReportRoutes(app: any): void {
         }
     });
 
-    app.put('/reports', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.put('/reports/:id', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
 
             const { id } = req.params;
