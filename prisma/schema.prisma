@@ -201,7 +201,7 @@ model reportPhotos {
 model reports {
   id           Int            @id @default(autoincrement())
   clientId     Int
-  laborAreaId  Int
+  laborAreaId  Int?
   news         String?        @db.VarChar(150)
   report       String         @db.Text
   employeeId   Int
@@ -214,7 +214,7 @@ model reports {
   reportPhotos reportPhotos[]
   clients      clients        @relation(fields: [clientId], references: [id], onUpdate: Restrict, map: "fk_reports_client")
   employees    employees      @relation(fields: [employeeId], references: [id], onUpdate: Restrict, map: "fk_reports_employees")
-  laborAreas   laborAreas     @relation(fields: [laborAreaId], references: [id], onUpdate: Restrict, map: "fk_reports_labor_area")
+  laborAreas   laborAreas?    @relation(fields: [laborAreaId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_reports_labor_area")
 
   @@index([laborAreaId], map: "fk_reports_labor_area")
   @@index([clientId], map: "fk_reports_client")

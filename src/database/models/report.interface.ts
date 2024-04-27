@@ -2,7 +2,7 @@ import { Client } from "./client.interface";
 
 export interface Report {
     id: number;
-    laborAreaId: number;
+    laborAreaId?: number | null;
     clientId: number;
     news?: string | null;
     report: string;
