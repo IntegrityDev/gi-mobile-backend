@@ -188,9 +188,10 @@ class EmployeeRepository {
         if (clientEmployee) {
           client = await this.prisma.clients.findUnique({
             where: {
-              id: clientEmployee.id
-            }
-          })
+              id: clientEmployee.id,
+              isActive: true,
+            },
+          });
         }
       }
 
