@@ -62,6 +62,23 @@ export default function setupReportRoutes(app: any): void {
         }
     });
 
+    app.put('/reports', AuthMiddleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
+        try {
+
+            const { id } = req.params;
+            const { id: userId } = req.user as { id: string };
+            const reqBody = { ...req.body }
+            const { data } = await service.Update(+id!, reqBody, +userId);
+            return res.json(data);
+
+        } catch (error) {
+            console.log(error)
+            return res.status(STATUS_CODES.INTERNAL_ERROR).json({
+                message: RESPONSE_MESSAGES.REQUEST_PROCESSING_ERROR 
+            });
+        }
+    });
+
     app.get('/lasts-reports', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { data } = await service.GetLastFive(req.user);
