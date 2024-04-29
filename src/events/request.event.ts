@@ -160,10 +160,10 @@ requestEmitter.on(
 );
 
 requestEmitter.on("employee-request-commented", async (employeeRequest: any) => {
-
+  
 });
 
-requestEmitter.on("client-request-commented", async (employeeRequest: any) => {
+requestEmitter.on("client-request-commented", async (clientRequest: any) => {
 
 })
 

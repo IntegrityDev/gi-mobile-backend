@@ -1,8 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-import { ClientRequest, CreateEmployeeRequest, EmployeeRequest } from '../models';
-import { CreateClientRequest } from '../models/clientRequest.interface';
-import PrismaInstance from '../../utils/PrismaInstance';
-import requestEmitter from '../../events/request.event';
+import { PrismaClient } from "@prisma/client";
+import {
+  ClientRequest,
+  CreateEmployeeRequest,
+  EmployeeRequest,
+} from "../models";
+import { CreateClientRequest } from "../models/clientRequest.interface";
+import PrismaInstance from "../../utils/PrismaInstance";
+import requestEmitter from "../../events/request.event";
 
 class RequestRepository {
   private prismaInstance: PrismaInstance;
@@ -37,7 +41,7 @@ class RequestRepository {
         },
         include: {
           employees: true,
-          employeeRequestTypes: true
+          employeeRequestTypes: true,
         },
       });
       if (userEntry) {
@@ -75,7 +79,7 @@ class RequestRepository {
         },
         include: {
           clients: true,
-          clientRequestTypes: true
+          clientRequestTypes: true,
         },
       });
 
@@ -95,17 +99,33 @@ class RequestRepository {
     userId: number
   ): Promise<any | null> {
     try {
-      const userEntry = await this.prisma.employeeRequestComments.create({
-        data: {
-          idRequest,
-          comments,
-          createdBy: userId
-        },
-      });
-      if (userEntry) {
-        requestEmitter.emit("employee-request-commented", userEntry);
+      if (isClosed) {
+        await this.prisma.employeeRequests.update({
+          data: {
+            isClosed: true,
+          },
+          where: {
+            id: idRequest,
+          },
+        });
       }
-      return userEntry;
+
+      if (comments) {
+        const userEntry = await this.prisma.employeeRequestComments.create({
+          data: {
+            idRequest,
+            comments,
+            createdBy: userId,
+          },
+        });
+        if (userEntry) {
+          requestEmitter.emit("employee-request-commented", userEntry);
+        }
+
+        return userEntry;
+      }
+
+      return null;
     } catch (error) {
       throw error;
     }
@@ -118,18 +138,33 @@ class RequestRepository {
     userId: number
   ): Promise<any | null> {
     try {
-      const userEntry = await this.prisma.clientRequestResponses.create({
-        data: {
-          requestId: idRequest,
-          comments,
-          createdBy: userId,
-          isDeleted: false,
-        },
-      });
-      if (userEntry) {
-        requestEmitter.emit("client-request-commented", userEntry);
+      if (isClosed) {
+        await this.prisma.clientsRequests.update({
+          data: {
+            isClosed: true,
+          },
+          where: {
+            id: idRequest,
+          },
+        });
       }
-      return userEntry;
+
+      if (comments) {
+        const userEntry = await this.prisma.clientRequestResponses.create({
+          data: {
+            requestId: idRequest,
+            comments,
+            createdBy: userId,
+            isDeleted: false,
+          },
+        });
+        if (userEntry) {
+          requestEmitter.emit("client-request-commented", userEntry);
+        }
+        return userEntry;
+      }
+
+      return null;
     } catch (error) {
       throw error;
     }
@@ -161,8 +196,8 @@ class RequestRepository {
           employeeRequestTypes: true,
         },
         orderBy: {
-            createdAt: "desc"
-        }
+          createdAt: "desc",
+        },
       });
     } catch (error) {
       throw error;
@@ -175,9 +210,9 @@ class RequestRepository {
         where: {
           identification,
         },
-        include:{
-            employees: true,
-            employeeRequestTypes: true,
+        include: {
+          employees: true,
+          employeeRequestTypes: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -194,9 +229,9 @@ class RequestRepository {
         where: {
           identification,
         },
-        include:{
+        include: {
           clients: true,
-          clientRequestTypes: true
+          clientRequestTypes: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -215,8 +250,8 @@ class RequestRepository {
           clientRequestTypes: true,
         },
         orderBy: {
-            createdAt: "desc"
-        }
+          createdAt: "desc",
+        },
       });
     } catch (error) {
       throw error;
@@ -229,9 +264,9 @@ class RequestRepository {
         where: {
           id,
         },
-        include:{
-            employees: true,
-            employeeRequestTypes: true,
+        include: {
+          employees: true,
+          employeeRequestTypes: true,
         },
       });
     } catch (error) {
@@ -245,9 +280,9 @@ class RequestRepository {
         where: {
           id,
         },
-        include:{
-            clients: true,
-            clientRequestTypes: true,
+        include: {
+          clients: true,
+          clientRequestTypes: true,
         },
       });
     } catch (error) {
@@ -260,7 +295,7 @@ class RequestRepository {
       return await this.prisma.clientRequestResponses.findMany({
         where: {
           requestId: id,
-        }
+        },
       });
     } catch (error) {
       throw error;

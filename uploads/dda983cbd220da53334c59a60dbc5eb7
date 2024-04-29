@@ -1,5 +1,0 @@
-identification,firstName,lastName,email,address,phone,cellphone,isActive,isSupervisor
-200137,Rosa,Alvarez,email27@example.com,567 Cherry Street,567-890-1234,2345678901,true,false
-200138,Felipe,Molina,email28@example.com,890 Walnut Boulevard,890-123-4567,9012345678,false,false
-200139,Laura,Torres,email29@example.com,123 Pine Street,123-456-7890,0987654321,true,true
-200141,Santiago,Cruz,email30@example.com,456 Oak Avenue,456-789-1234,9876543210,false,false

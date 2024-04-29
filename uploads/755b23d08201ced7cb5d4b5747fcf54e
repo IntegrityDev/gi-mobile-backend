@@ -1,4 +1,0 @@
-identification,firstName,lastName,email,address,phone,cellphone,isActive,isSupervisor
-20121,Andres,Martinez,email11@example.com,123 Main Street,123-456-7890,0987654321,true,false
-20145,Ana,Garcia,email12@example.com,456 Oak Avenue,456-789-1234,9876543210,false,true
-20123,Pablo,Rodriguez,email13@example.com,789 Elm Street,789-123-4567,0123456789,true,false
