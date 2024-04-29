@@ -88,6 +88,53 @@ class RequestRepository {
     }
   }
 
+  async CommentEmployeeRequest(
+    idRequest: number,
+    comments: string,
+    isClosed: boolean,
+    userId: number
+  ): Promise<any | null> {
+    try {
+      const userEntry = await this.prisma.employeeRequestComments.create({
+        data: {
+          idRequest,
+          comments,
+          createdBy: userId
+        },
+      });
+      if (userEntry) {
+        requestEmitter.emit("employee-request-commented", userEntry);
+      }
+      return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async CommentClientRequest(
+    idRequest: number,
+    comments: string,
+    isClosed: boolean,
+    userId: number
+  ): Promise<any | null> {
+    try {
+      const userEntry = await this.prisma.clientRequestResponses.create({
+        data: {
+          requestId: idRequest,
+          comments,
+          createdBy: userId,
+          isDeleted: false,
+        },
+      });
+      if (userEntry) {
+        requestEmitter.emit("client-request-commented", userEntry);
+      }
+      return userEntry;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Update(
     id: number,
     dataToUpdate: Partial<EmployeeRequest>,
@@ -160,6 +207,22 @@ class RequestRepository {
     }
   }
 
+  async GetAllClientRequests(): Promise<ClientRequest[]> {
+    try {
+      return await this.prisma.clientsRequests.findMany({
+        include: {
+          clients: true,
+          clientRequestTypes: true,
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetById(id: number): Promise<EmployeeRequest | null> {
     try {
       return await this.prisma.employeeRequests.findFirst({
@@ -169,6 +232,22 @@ class RequestRepository {
         include:{
             employees: true,
             employeeRequestTypes: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetClientRequestById(id: number): Promise<EmployeeRequest | null> {
+    try {
+      return await this.prisma.clientsRequests.findFirst({
+        where: {
+          id,
+        },
+        include:{
+            clients: true,
+            clientRequestTypes: true,
         },
       });
     } catch (error) {
