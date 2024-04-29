@@ -255,6 +255,30 @@ class RequestRepository {
     }
   }
 
+  async GetClientRequestResponses(id: number): Promise<any | null> {
+    try {
+      return await this.prisma.clientRequestResponses.findMany({
+        where: {
+          requestId: id,
+        }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetEmployeeRequestResponses(id: number): Promise<any | null> {
+    try {
+      return await this.prisma.employeeRequestComments.findMany({
+        where: {
+          idRequest: id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async Delete(id: number, userId: number): Promise<EmployeeRequest | null> {
     try {
       const deleted = await this.prisma.employeeRequests.delete({

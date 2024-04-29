@@ -186,4 +186,32 @@ export default function setupRequestsRoutes(app: any): void {
       }
     }
   );
+
+  app.get(
+    "/client-request-responses/:id",
+    AuthMiddleware,
+    async (req: CustomRequest, res: Response, next: NextFunction) => {
+      try {
+        const { id } = req.params;
+        const { data } = await service.GetClientRequestResponses(+id);
+        return res.json(data);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  app.get(
+    "/employee-request-responses/:id",
+    AuthMiddleware,
+    async (req: CustomRequest, res: Response, next: NextFunction) => {
+      try {
+        const { id } = req.params
+        const { data } = await service.GetEmployeeRequestResponses(+id);
+        return res.json(data);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
 }

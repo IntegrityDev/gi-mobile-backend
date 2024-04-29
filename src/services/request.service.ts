@@ -151,6 +151,22 @@ class RequestService {
       throw error;
     }
   }
+
+  async GetClientRequestResponses(id: number) {
+    try {
+        return FormateData(await this.repository.GetClientRequestResponses(id));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async GetEmployeeRequestResponses(id: number) {
+    try {
+      return FormateData(await this.repository.GetEmployeeRequestResponses(id));
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default RequestService;
