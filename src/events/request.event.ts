@@ -91,7 +91,7 @@ requestEmitter.on(
       if (clientRequest?.clients) {
         const { name } = clientRequest.clients;
         const title = `${name} creó una nueva solicitud`;
-        const message = `${name} creó una nueva solicitud de tipo ${clientRequest?.clientRequestTypes?.name}`;
+        const message = `${name} creó una nueva solicitud`;
         const userRepository = new UserRepository();
         const userProfileRepository = new UserProfileRepository();
         const notificationRepository = new NotificationRepository();
@@ -105,7 +105,7 @@ requestEmitter.on(
               const user = await userRepository.GetUserById(
                 administrator.userId
               );
-              if (user) {
+              if (user && user.identificationId) {
                 await notificationRepository.Create(
                   user.identificationId,
                   title,

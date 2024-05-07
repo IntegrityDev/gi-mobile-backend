@@ -101,18 +101,18 @@ model clientRequestResponses {
 }
 
 model clientsRequests {
-  id                 Int                @id @default(autoincrement())
-  identification     String             @db.VarChar(100)
+  id                 Int                 @id @default(autoincrement())
+  identification     String              @db.VarChar(100)
   isClosed           Boolean
-  request            String             @db.Text
-  requestTypeId      Int
-  createdAt          DateTime           @default(now()) @db.Date
+  request            String              @db.Text
+  requestTypeId      Int?
+  createdAt          DateTime            @default(now()) @db.Date
   createdBy          Int
-  modifiedAt         DateTime?          @db.Date
+  modifiedAt         DateTime?           @db.Date
   modifiedBy         Int?
   isDeleted          Boolean
-  clients            clients            @relation(fields: [identification], references: [identification], onUpdate: Restrict, map: "fk_cli_clients")
-  clientRequestTypes clientRequestTypes @relation(fields: [requestTypeId], references: [id], onUpdate: Restrict, map: "fk_cli_request_type")
+  clients            clients             @relation(fields: [identification], references: [identification], onUpdate: Restrict, map: "fk_cli_clients")
+  clientRequestTypes clientRequestTypes? @relation(fields: [requestTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_cli_request_type")
 
   @@index([identification], map: "fk_cli_clients")
   @@index([requestTypeId], map: "fk_cli_request_type")

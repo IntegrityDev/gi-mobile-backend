@@ -4,7 +4,7 @@ export interface ClientRequest {
     id: number;
     identification: string;
     isClosed: boolean;
-    requestTypeId: number;
+    requestTypeId?: number | null;
     request: string;
     isDeleted: boolean;
     createdAt: Date;

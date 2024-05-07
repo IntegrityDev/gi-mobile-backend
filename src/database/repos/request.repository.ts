@@ -66,11 +66,6 @@ class RequestRepository {
           isClosed,
           createdBy,
           isDeleted: false,
-          clientRequestTypes: {
-            connect: {
-              id: requestTypeId,
-            },
-          },
           clients: {
             connect: {
               identification: identification,
@@ -274,7 +269,7 @@ class RequestRepository {
     }
   }
 
-  async GetClientRequestById(id: number): Promise<EmployeeRequest | null> {
+  async GetClientRequestById(id: number): Promise<ClientRequest | null> {
     try {
       return await this.prisma.clientsRequests.findFirst({
         where: {
