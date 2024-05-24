@@ -59,14 +59,20 @@ class EmployeeService {
                 isClient,
               } = user;   
 
-              if (isSuperAdmin || isSupervisor || isAdmin) {
-                return FormateData(await this.repository.GetAll(query, supervisors));
+              if (isSuperAdmin || isSupervisor) {
+                return FormateData(
+                  await this.repository.GetAll(query, supervisors)
+                );
+              } else if (isAdmin) {
+                return FormateData(
+                  await this.repository.GetAllForAdmin(query, supervisors)
+                );
               } else if (isClient) {
-                  return FormateData(
-                    await this.repository.GetByClientIdentification(
-                      identification
-                    )
-                  );
+                return FormateData(
+                  await this.repository.GetByClientIdentification(
+                    identification
+                  )
+                );
               } 
               return FormateData([])            
         } catch (error) {

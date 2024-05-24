@@ -118,6 +118,28 @@ class ClientRepository {
     }
   }
 
+  async GetAllForAdmin(query: string): Promise<Client[]> {
+    try {
+      let whereCondition: any = {
+      }
+      if (query !== "null" && query !== "undefined") {
+        whereCondition.OR = [
+          {
+            name: {
+              contains: query?.trim(),
+            },
+          },
+        ];
+      }
+
+      return await this.prisma.clients.findMany({
+        where: whereCondition,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   //TODO: fore create
   async GetEmployeesByClientId(clientId: number): Promise<Client[]> {
     try {

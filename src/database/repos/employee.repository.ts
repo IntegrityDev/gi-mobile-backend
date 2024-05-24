@@ -124,6 +124,33 @@ class EmployeeRepository {
     }
   }
 
+  async GetAllForAdmin(query: string | null, supervisors = false): Promise<Employee[]> {
+    try {
+      let whereCondition: any = {
+        isSupervisor: supervisors,
+      };
+      if (query !== "null" && query !== "undefined") {
+        whereCondition.OR = [
+          {
+            firstName: {
+              contains: query!,
+            },
+          },
+          {
+            lastName: {
+              contains: query!,
+            },
+          },
+        ];
+      }
+      return await this.prisma.employees.findMany({
+        where: whereCondition,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async GetById(id: number): Promise<Employee | null> {
     try {
       let client: Client | null = null;

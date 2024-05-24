@@ -8,10 +8,10 @@ import { ClientService, LaborAreaService } from '../services';
 export default function setupClientRoutes(app: any): void {
     const service = new ClientService();
     
-    app.get('/clients',  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    app.get('/clients', AuthMiddleware,  async (req: CustomRequest, res: Response, next: NextFunction) => {
         try {
             const { query } = req.query as { query: string };
-            const { data } = await service.GetAll(query);
+            const { data } = await service.GetAll(req.user, query);
             return res.json(data);
         } catch (error) {
             console.error("Error en el servidor:", error);

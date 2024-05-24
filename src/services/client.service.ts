@@ -56,8 +56,16 @@ class ClientService {
     }
   }
 
-  async GetAll(query: string) {
+  async GetAll(user: any,query: string) {
     try {
+      const {
+        isAdmin,
+      } = user;
+      if (isAdmin) {
+        return FormateData(
+          await this.repository.GetAllForAdmin(query)
+        );
+      }
       return FormateData(await this.repository.GetAll(query));
     } catch (error) {
       throw error;
