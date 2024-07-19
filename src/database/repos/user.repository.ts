@@ -367,6 +367,23 @@ class UserRepository {
           modifiedAt: new Date(),
         },
       });
+
+      const userEmployee = await this.GetUserById(id);
+      console.log(userEmployee);
+      if (userEmployee) {
+        if (userEmployee.employee && userEmployee.employee.isSupervisor) {
+          await this.CreateUserProfile(id, 1, 0);
+        } else {
+          const client = await this.FindClientByIdentification(
+            userEmployee.identificationId
+          );
+
+          if (client) {
+            await this.CreateUserProfile(id, 3, 0);
+          }
+        }
+      }
+
       return updated;
     } catch (error) {
       throw error;
